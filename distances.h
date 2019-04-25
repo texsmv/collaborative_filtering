@@ -1,3 +1,6 @@
+#ifndef DISTANCES_H
+#define DISTANCES_H
+
 #include "math.h"
 #include "tipos.h"
 
@@ -82,3 +85,6 @@ t_distance pearson(t_ratings* a, t_ratings* b){
     t_distance d2 = sqrt(y_2 -(pow(y,2)/n));
     return (d1 == 0 || d2 == 0) ? 0 : n1 / (d1 * d2);
 }
+
+
+#endif

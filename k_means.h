@@ -1,3 +1,7 @@
+#ifndef K_MEANS_H
+#define K_MEANS_H
+
+
 #include "tipos.h"
 #include <iostream>
 #include <random>
@@ -197,3 +201,6 @@ void k_means_f(vector<int> data, int k, int t){
 
 
 }
+
+
+#endif
