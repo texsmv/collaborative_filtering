@@ -10,8 +10,8 @@ t_distance cosine(t_ratings* a, t_ratings* b){
     t_rating lyl = 0;
 
 
-    while(it1 != a.end() or it2 != b.end()){
-        if(it1 != a.end() && it2 != b.end()){
+    while(it1 != a->end() or it2 != b->end()){
+        if(it1 != a->end() && it2 != b->end()){
             if(it1->first == it2->first){
                 xy += it1->second * it2->second;
                 lxl += pow(it1->second,2);
@@ -42,7 +42,7 @@ t_distance euclidean(t_ratings* a, t_ratings* b){
     auto it1 = a->begin();
     auto it2 = b->begin();
     t_distance sum = 0;
-    while(it1 != a.end() && it2 != b.end()){
+    while(it1 != a->end() && it2 != b->end()){
         if(it1->first == it2->first){
             sum += pow(it1->second - it2->second,2);
             it1++; it2++;
@@ -63,7 +63,7 @@ t_distance pearson(t_ratings* a, t_ratings* b){
     t_distance x_2 = 0;
     t_distance y_2 = 0;
     int n = 0;
-    while(it1 != a.end() && it2 != b.end()){
+    while(it1 != a->end() && it2 != b->end()){
         if(it1->first == it2->first){
             xy += it1->second * it2->second;
             x += it1->second;
