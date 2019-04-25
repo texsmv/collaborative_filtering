@@ -9,6 +9,10 @@
 #define f first
 #define s second
 
+#define b begin
+#define e end
+#define n_peliculas 27000
+
 
 using namespace std;
 

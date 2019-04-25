@@ -25,7 +25,7 @@ t_distance cosine(t_ratings* a, t_ratings* b){
                 it2++;
             }
         }else{
-                if(it1 != a.end()){
+                if(it1 != a->end()){
                     lyl += pow(it1->second,2);
                     it1++;
                 }else{
