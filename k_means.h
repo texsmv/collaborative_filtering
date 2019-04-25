@@ -5,6 +5,7 @@
 
 
 vector<t_ratings> convertir(vector<vector<t_rating>> v_means, vector<int> conts, int k){
+  // centroides
   vector<t_ratings> n_means(k);
 
   int j = 0;
@@ -13,7 +14,10 @@ vector<t_ratings> convertir(vector<vector<t_rating>> v_means, vector<int> conts,
     t_ratings ratings;
     int i = 0;
     for(auto ite = it->b(); ite != it->e(); ite++){
-      ratings.push_back(make_pair(i, (*ite) / *it_cont));
+      if(*ite != 0){
+        ratings.push_back(make_pair(i, (*ite) / *it_cont));
+
+      }
     }
     n_means[j] = ratings;
     it_cont++;
@@ -23,24 +27,42 @@ vector<t_ratings> convertir(vector<vector<t_rating>> v_means, vector<int> conts,
 
 }
 
-void k_means(t_rating_vector& data, int k, int t){
+void k_means(t_rating_vector& data, int k, int t, t_rating_matrix& matrix1, t_rating_matrix& matrix2){
+
+  // matrix = new t_rating_matrix*[k];
+  cout<<"Inicio"<<endl;
   // inicializar centroides aleatorios de la data
   vector<t_ratings> means(k);
+  cout<<means.size()<<endl;
+
   static std::random_device seed;
   static std::mt19937 random_number_generator(seed());
   std::uniform_int_distribution<size_t> indices(0, data.size() - 1);
-  for (auto& cluster : means) {
-    cluster = *(data[indices(random_number_generator)].s);
+
+  auto it = means.b();
+  for (int i = 0; i < means.size(); i++) {
+    // cout<<i<<endl;
+    int in = indices(random_number_generator);
+    cout<<"Indice: "<<in<<endl;
+    *it = *(data[indices(random_number_generator)].s);
+
+    for(auto ite = it->b(); ite != it->e();ite++){
+      cout<<ite->f<<" "<<ite->s<<endl;
+    }
+    // cout<<"Adsa"<<endl;
+    it++;
   }
 
+  // cout<<"dasd"<<endl;
   // vector con las clases a la que pertenece cada dato
   vector<int> data_cluster(data.size());
 
-
+  cout<<"Iniciando iteraciones"<<endl;
   // for para el numero de iteraciones
   for (size_t i = 0; i < t; i++) {
+    cout<<"Iteraciones : "<<i<<endl;
     vector<int> means_cont(k);
-    vector<vector<t_rating> > n_means(k);\
+    vector<vector<t_rating> > n_means(k);
     for (size_t j = 0; j < k; j++) {
       n_means[j] = vector<t_rating>(n_peliculas);
     }
@@ -49,12 +71,12 @@ void k_means(t_rating_vector& data, int k, int t){
     // iterando los datos
     int pos = 0;
     for(auto it = data.b(); it != data.e(); it++){
-      t_similarity max_similarity = cosine(&(means[0]), it->s);
+      t_similarity max_similarity = euclidean(&(means[0]), it->s);
       int mean = 0;
 
       // calculando similaridad a los centroides
       for (size_t j = 1; j < means.size(); j++) {
-        t_similarity cur_similarity = cosine(&(means[j]), it->s);
+        t_similarity cur_similarity = euclidean(&(means[j]), it->s);
         if(max_similarity < cur_similarity){
           mean = j;
           max_similarity = cur_similarity;
@@ -78,15 +100,38 @@ void k_means(t_rating_vector& data, int k, int t){
       it_data++;
       it_data_cluster++;
     }
+
+    //mal - considerar
     means = convertir(n_means, means_cont, k);
 
 
+    for(auto v : data_cluster){
+      cout<<v<<" ";
+    }
+    cout<<endl;
   }
 
+  // for(int a = 0; a < k; a++){
+  //   matrix[a] = new t_rating_matrix();
+  //   // cout<<"sas"<<endl;
+  // }
+  for(int a = 0; a < data_cluster.size(); a++){
+    // cout<<"da"<<endl;
+    if(data_cluster[a] == 0){
+      matrix1[data[a].f] = data[a].s;
 
-
+    }
+    else{
+      matrix2[data[a].f] = data[a].s;
+    }
+  }
+  cout<<matrix1.size()<<endl;
+  cout<<matrix2.size()<<endl;
 
 }
+
+
+
 
 void k_means_f(vector<int> data, int k, int t){
   vector<float> means(k);
@@ -142,9 +187,13 @@ void k_means_f(vector<int> data, int k, int t){
 
   }
   auto it = data_cluster.begin();
-
   for(int i = 0; i < data.size(); i++){
-    cout<<data[i]<<" "<<*it<<endl;
+    cout<<data[i]<<" "<<*it;
     it++;
   }
+  cout<<endl;
+
+
+
+
 }
