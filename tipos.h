@@ -6,6 +6,9 @@
 #include <vector>
 #include <tuple>
 
+#define f first
+#define s second
+
 
 using namespace std;
 
@@ -22,7 +25,7 @@ typedef list<pair<t_id_item, t_rating> > t_ratings;
 typedef map<t_id_user, t_ratings*> t_rating_matrix;
 typedef map<t_id_user, map<t_similarity, t_id_user>* > t_similarity_matrix;
 
-typedef list<pair<t_id_user, t_ratings*> > t_rating_list;
+typedef vector<pair<t_id_user, t_ratings*> > t_rating_vector;
 
 
 class Node;
