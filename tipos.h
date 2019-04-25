@@ -1,3 +1,6 @@
+#ifndef TIPOS_H
+#define TIPOS_H
+
 #include <list>
 #include <map>
 #include <vector>
@@ -19,10 +22,7 @@ typedef list<pair<t_id_item, t_rating> > t_ratings;
 typedef map<t_id_user, t_ratings*> t_rating_matrix;
 typedef map<t_id_user, map<t_similarity, t_id_user>* > t_similarity_matrix;
 
-
-t_distance cosine(t_ratings* a, t_ratings* b){
-
-}
+typedef list<pair<t_id_user, t_ratings*> > t_rating_list;
 
 
 class Node;
@@ -53,3 +53,7 @@ private:
   Node* p_right;
 
 };
+
+
+
+#endif
