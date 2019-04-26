@@ -41,6 +41,38 @@ t_distance cosine(t_ratings* a, t_ratings* b){
 }
 
 
+t_distance euclidean2(t_ratings* a, t_ratings* b){
+    auto it1 = a->begin();
+    auto it2 = b->begin();
+
+    t_rating sum = 0;
+
+
+    while(it1 != a->end() or it2 != b->end()){
+        if(it1 != a->end() && it2 != b->end()){
+            if(it1->first == it2->first){
+                sum += pow(it1->second - it2->second,2);
+              it1++; it2++;
+            }else if(it1->first < it2->first){
+                sum += pow(it1->second, 2);
+                it1++;
+            }else{
+                sum += pow(it2->second,2);
+                it2++;
+            }
+        }else{
+                if(it1 != a->end()){
+                    sum += pow(it1->second,2);
+                    it1++;
+                }else{
+                    sum += pow(it2->second,2);
+                    it2++;
+                }
+        }
+    }
+    return sqrt(sum);
+}
+
 t_distance euclidean(t_ratings* a, t_ratings* b){
     auto it1 = a->begin();
     auto it2 = b->begin();

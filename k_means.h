@@ -5,6 +5,7 @@
 #include "tipos.h"
 #include <iostream>
 #include <random>
+#include <limits>
 #include "distances.h"
 
 
@@ -135,10 +136,11 @@ vector<t_ratings> convertir(vector<vector<t_rating>> v_means, vector<int> conts,
 // }
 //
 
-void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_rating_vector& matrix2){
-
+void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_rating_vector& matrix2, t_ratings& cenntroid1, t_ratings& centroid2){
+  int max_num = ceil(data.size() / k);
   // matrix = new t_rating_matrix*[k];
   cout<<"Inicio"<<endl;
+  cout<<"max num:  "<<max_num<<endl;
   // inicializar centroides aleatorios de la data
   vector<t_ratings> means(k);
   cout<<"data size: "<<data.size()<<endl;
@@ -179,41 +181,65 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
 
 
     // iterando los datos
+    cout<<"iterando los datos"<<endl;
     int pos = 0;
     for(auto it = data.b(); it != data.e(); it++){
-      t_similarity max_similarity = euclidean(&(means[0]), it->s);
-      int mean = 0;
-
+      // cout<<"Posicion:  "<<pos<<endl;
+      t_similarity max_similarity = numeric_limits<t_similarity>::infinity();
+      int mean = -1;
+      // cout<<"calculando similaridad a los centroides"<<endl;
       // calculando similaridad a los centroides
-      for (size_t j = 1; j < means.size(); j++) {
-        t_similarity cur_similarity = euclidean(&(means[j]), it->s);
-        if(max_similarity < cur_similarity){
-          mean = j;
-          max_similarity = cur_similarity;
+      for (size_t j = 0; j < means.size(); j++) {
+
+        if(means_cont[j] <= max_num){
+          // cout<<"asd"<<endl;
+          t_similarity cur_similarity = euclidean(&(means[j]), it->s);
+          if(max_similarity > cur_similarity){
+            mean = j;
+            max_similarity = cur_similarity;
+          }
+
         }
       }
       // guardando el cluster al que pertenece cada usuario
       data_cluster[pos] = mean;
+      means_cont[mean]++;
       pos++;
     }
     auto it_data = data.b();
     auto it_data_cluster = data_cluster.b();
 
+
+    cout<<"means"<<endl;
+    cout<<data.size();
+    cout<<" "<<data_cluster.size();
     while(it_data != data.e()) {
+      // cout<<"-";
       for (auto it = it_data->s->b(); it != it_data->s->e(); it++) {
         n_means[*it_data_cluster][it->f] += it->s;
       }
-      means_cont[*it_data_cluster]++;
+      // means_cont[*it_data_cluster]++;
 
 
 
       it_data++;
       it_data_cluster++;
     }
+    cout<<"ad"<<endl;
 
     //mal - considerar
     means = convertir(n_means, means_cont, k);
 
+    // for(int i = 0; i < means.size(); i++){
+    //   cout<<endl;
+    //   cout<<"Centroide:   "<<i<<" "<<"Size: "<<means[i].size()<<endl;
+    //   for(auto v : means[i]){
+    //     cout<<v.first<<" "<<v.second<<"  --  ";
+    //   }
+    //   cout<<endl;
+    // }
+
+    cout<<"Cluster size:  "<<data_cluster.size()<<endl;
 
     for(auto v : data_cluster){
       cout<<v<<" ";
