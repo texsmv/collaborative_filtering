@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "read.h"
+#include "algoritmos.h"
 
 
 int randNum(int min, int max)
@@ -61,15 +62,83 @@ int main(int argc, char const *argv[]) {
 
 
   t_rating_vector db;
+  t_similarity_matrix* sm;
+  t_rating_matrix* rm;
   read_file(db, "ml-latest/ratings.csv");
+  // read_file(db, "u.csv");
+
+  RecTree tree;
+  tree.add_data(db);
+  tree.print_size();
+
+
+  t_id_user id;
+  t_id_item id_pelicula;
+  int k;
+  while (true) {
+    int opcion;
+    cout<<"Id del usuario:"<<endl;
+    cin>>id;
+    t_id_user id = db[0].f;
+    t_ratings r = *(db[0].s);
+    tree.get_sm(r, sm, rm);
+    cout<<"1. para top K mas cercanos: "<<endl;
+    cout<<"2. para prediccion dado k vecinos: "<<endl;
+    vector<pair<t_id_user,t_similarity> > res_2;
+    vector<t_id_user> res;
+    vector<t_ratings*> res_r;
+    cin>>opcion;
+    cout<<"Ingrese k : ";
+    cin>>k;
+
+    if(opcion == 1){
+      res = knn(*sm, id, k);
+      res_r = items_Knn(*rm, res);
+      vector<t_id_item> topk = top_k(res, res_r, k);
+
+      for(auto v : topk){
+        cout<<"Recomendados: "<< v<<endl;
+      }
+    }
+    else if(opcion == 2){
+      cout<<"Id pelicula a predecir"<<endl;
+      cin>>id_pelicula;
+
+      res_2 = knn_sim(*sm, id, k);
+      t_rating a = proyection(res_2, *rm, id_pelicula);
+      cout<<"Valor proyectado: "<<a<<endl;
+
+    }
+    else{
+      break;
+    }
+
+
+
+    /* code */
+  }
+
+
+
+
 
   // t_rating_vector m1, m2;
   // k_means_r(db, 2, 5, m1, m2);
   // cout<<m1.size()<<" "<<m2.size()<<endl;
 
-  RecTree tree;
-  tree.add_data(db);
-  tree.print_size();
+  // cout<<"adding"<<endl;
+  // cout<<"end adding"<<endl;
+  //
+  // cout<<endl;
+  // cout<<endl;
+  // cout<<endl;
+  // cout<<sm->size()<<endl;
+
+  // for(auto v : res){
+  //   cout<<"Cercanos: "<< v<<endl;
+  // }
+
+
 
 
 

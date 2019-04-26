@@ -2,28 +2,27 @@
 #define CLASES_H
 
 #include "k_means.h"
+#include "algoritmos.h"
 
 
-void calc_similarity_matrix(t_rating_vector &matrixR, t_similarity_matrix &matrixS){
-    t_id_user idusr,idng;
-    t_similarity sum= 0;
-    for(auto it=0; it < matrixR.size(); it++){
-        idusr = matrixR[it].f;
-        map<t_similarity, t_id_user> *sm = new map<t_similarity, t_id_user>();
-        for(auto it1=0; it1 < matrixR.size(); it1++){
-            if(it!=it1){
-                idng = matrixR[it1].f;
-                sum = euclidean(matrixR[it].s,matrixR[it1].s);
-                (*sm)[sum] = idng;
-                matrixS[idusr] = sm;
-            }
 
-
-        }
-
-    }
-}
-
+// vector<t_id_user> knn(t_similarity_matrix &matrixS,t_id_user usr, int k){
+//     vector<t_id_user> k_ng; //k_vecinos mas cercanos
+//     auto e = matrixS.find(usr);
+//     if(e == matrixS.e()){
+//       cout<<"Not found!!!!!!!!!!! - GG"<<endl;
+//     }
+//     else{
+//       cout<<"Found! - Size of map: "<<matrixS[usr]->size()<<endl;
+//     }
+//     auto itusr = matrixS[usr]->b();
+//     while(itusr!= matrixS[usr]->e() && k>0 ){
+//         k_ng.push_back(itusr->s);
+//         itusr++;
+//         k--;
+//     }
+//     return k_ng;
+// }
 
 
 class Node{
@@ -33,20 +32,42 @@ public:
 
   void constructRecTree(t_rating_vector& data, int curr_depth);
   void print_size();
+  void get_sm(t_ratings&, t_similarity_matrix*& sm, t_rating_matrix*& rm);
 
 private:
   t_ratings centroid;
   int cur_depth;
   int max_depth = 5;
-  int max_elements = 1000;
+  int max_elements = 100;
   int cur_elements;
   Node* p_left =0;
   Node* p_right =0;
   t_rating_matrix* matrix;
   t_similarity_matrix* similarity_matrix;
+  bool leaf =false;
 
 
 };
+
+
+void Node::get_sm(t_ratings& r, t_similarity_matrix*& sm, t_rating_matrix*& rm){
+  if(leaf){
+    sm = similarity_matrix;
+    rm = matrix;
+    cout<<"S: "<<similarity_matrix->size()<<endl;
+    return;
+  }
+  t_similarity d_right = euclidean(&r, &p_right->centroid);
+  t_similarity d_left = euclidean(&r, &p_left->centroid);
+  if(d_right < d_left){
+  // if(d_right < d_left){
+    p_right->get_sm(r, sm, rm);
+  }
+  else{
+    p_left->get_sm(r, sm, rm);
+  }
+
+}
 
 void Node::print_size(){
   cout<<"Depth: "<<cur_depth<<"size: "<<cur_elements<<endl;
@@ -63,6 +84,7 @@ void Node::constructRecTree(t_rating_vector& data, int curr_depth){
   cur_depth = curr_depth;
 
   if(data.size() < max_elements || curr_depth > max_depth){
+    leaf = true;
     matrix = new t_rating_matrix();
     for(auto it = data.b(); it!= data.e(); it++){
       (*matrix)[it->f] = it->second;
@@ -101,6 +123,7 @@ void Node::constructRecTree(t_rating_vector& data, int curr_depth){
 }
 
 
+
 // class Node;
 
 class RecTree{
@@ -110,12 +133,18 @@ public:
 
   void add_data(t_rating_vector&);
   void print_size();
-private:
+  void get_sm(t_ratings& r, t_similarity_matrix*& sm, t_rating_matrix*& rm);
+// private:
   Node* p_root = 0;
   int max_depth = 5;
   int max_node = 5;
 };
 
+
+void RecTree::get_sm(t_ratings& r, t_similarity_matrix*& sm, t_rating_matrix*& rm){
+
+  p_root->get_sm(r, sm, rm);
+}
 
 void RecTree::add_data(t_rating_vector& data){
   if(!p_root){

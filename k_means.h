@@ -186,6 +186,7 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
     for(auto it = data.b(); it != data.e(); it++){
       // cout<<"Posicion:  "<<pos<<endl;
       t_similarity max_similarity = numeric_limits<t_similarity>::infinity();
+      // t_similarity max_similarity = 0;
       int mean = -1;
       // cout<<"calculando similaridad a los centroides"<<endl;
       // calculando similaridad a los centroides
