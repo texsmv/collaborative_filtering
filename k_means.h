@@ -139,11 +139,11 @@ vector<t_ratings> convertir(vector<vector<t_rating>> v_means, vector<int> conts,
 void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_rating_vector& matrix2, t_ratings& cenntroid1, t_ratings& centroid2){
   int max_num = ceil(data.size() / k);
   // matrix = new t_rating_matrix*[k];
-  cout<<"Inicio"<<endl;
-  cout<<"max num:  "<<max_num<<endl;
+  // cout<<"Inicio"<<endl;
+  // cout<<"max num:  "<<max_num<<endl;
   // inicializar centroides aleatorios de la data
   vector<t_ratings> means(k);
-  cout<<"data size: "<<data.size()<<endl;
+  // cout<<"data size: "<<data.size()<<endl;
   // cout<<means.size()<<endl;
 
   static std::random_device seed;
@@ -154,7 +154,7 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
   for (int i = 0; i < means.size(); i++) {
     // cout<<i<<endl;
     int in = indices(random_number_generator);
-    cout<<"Indice: "<<in<<endl;
+    // cout<<"Indice: "<<in<<endl;
     means[i] = *(data[indices(random_number_generator)].s);
 
     // for(auto ite = means[i].b(); ite != means[i].e();ite++){
@@ -168,11 +168,11 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
   // vector con las clases a la que pertenece cada dato
   vector<int> data_cluster(data.size());
   vector<int> means_cont(k);
+  // cout<<"Iniciando iteraciones"<<endl;
 
-  cout<<"Iniciando iteraciones"<<endl;
   // for para el numero de iteraciones
   for (size_t i = 0; i < t; i++) {
-    cout<<"Iteraciones : "<<i<<endl;
+    // cout<<"Iteraciones : "<<i<<endl;
     means_cont = vector<int>(k);
     vector<vector<t_rating> > n_means(k);
     for (size_t j = 0; j < k; j++) {
@@ -181,7 +181,7 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
 
 
     // iterando los datos
-    cout<<"iterando los datos"<<endl;
+    // cout<<"iterando los datos"<<endl;
     int pos = 0;
     for(auto it = data.b(); it != data.e(); it++){
       // cout<<"Posicion:  "<<pos<<endl;
@@ -211,9 +211,9 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
     auto it_data_cluster = data_cluster.b();
 
 
-    cout<<"means"<<endl;
-    cout<<data.size();
-    cout<<" "<<data_cluster.size();
+    // cout<<"means"<<endl;
+    // cout<<data.size();
+    // cout<<" "<<data_cluster.size();
     while(it_data != data.e()) {
       // cout<<"-";
       for (auto it = it_data->s->b(); it != it_data->s->e(); it++) {
@@ -226,7 +226,7 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
       it_data++;
       it_data_cluster++;
     }
-    cout<<"ad"<<endl;
+    // cout<<"ad"<<endl;
 
     //mal - considerar
     means = convertir(n_means, means_cont, k);
@@ -240,12 +240,12 @@ void k_means_r(t_rating_vector& data, int k, int t, t_rating_vector& matrix1, t_
     //   cout<<endl;
     // }
 
-    cout<<"Cluster size:  "<<data_cluster.size()<<endl;
+    // cout<<"Cluster size:  "<<data_cluster.size()<<endl;
 
-    for(auto v : data_cluster){
-      cout<<v<<" ";
-    }
-    cout<<endl;
+    // for(auto v : data_cluster){
+    //   cout<<v<<" ";
+    // }
+    // cout<<endl;
   }
 
   // for(int a = 0; a < k; a++){

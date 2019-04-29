@@ -99,7 +99,7 @@ void read_file(t_rating_vector& db, string nombre){
 
   int id = -1;
   // int  cont = 0;
-  while (std::getline(infile, line) && i < 4000000) {
+    while (std::getline(infile, line) && i < 4000000) {
     if(i % 1000000 == 0)
       cout<<i<<endl;
     std::istringstream iss(line);

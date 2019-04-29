@@ -40,7 +40,7 @@ private:
   int max_depth = 5;
   int max_elements = 100;
   int cur_elements;
-  Node* p_left =0;
+  Node* p_left = 0;
   Node* p_right =0;
   t_rating_matrix* matrix;
   t_similarity_matrix* similarity_matrix;

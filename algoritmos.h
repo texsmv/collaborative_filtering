@@ -1,5 +1,7 @@
 #ifndef ALGORITMOS_H
 #define ALGORITMOS_H
+// #include <time.h>
+#include <stdio.h>
 
 #include "tipos.h"
 #include <algorithm>
@@ -42,7 +44,7 @@ vector<pair<t_id_user,t_similarity> > knn_sim(t_similarity_matrix &matrixS,t_id_
     }
     return k_ng;
 }
-// 
+//
 // vector<pair<t_id_user,t_similarity> > knn_sim2(t_similarity_matrix &matrixS,t_id_user usr, int k, t_id_item ){
 //     vector<pair<t_id_user,t_similarity> > k_ng; //k_vecinos mas cercanos
 //     auto itusr = matrixS[usr]->b();
@@ -80,7 +82,7 @@ void calc_similarity_matrix(t_rating_vector &matrixR, t_similarity_matrix &matri
             }
         }
     }
-    cout<<"matriz de similitud: "<<matrixS.size()<<endl;
+    // cout<<"matriz de similitud: "<<matrixS.size()<<endl;
 }
 
 vector<t_id_item> top_k(vector<t_id_user> ids_usuarios,vector<t_ratings*> ratings, int k){

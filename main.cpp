@@ -64,12 +64,21 @@ int main(int argc, char const *argv[]) {
   t_rating_vector db;
   t_similarity_matrix* sm;
   t_rating_matrix* rm;
-  read_file(db, "ml-latest/ratings.csv");
   // read_file(db, "u.csv");
+  clock_t start = clock();
+
+  read_file(db, "ml-latest/ratings.csv");
+  clock_t stop = clock();
+  double elapsed = (double)(stop - start) * 1000.0 / CLOCKS_PER_SEC;
+  cout<<"Tiempo de carga BD: "<<elapsed<<"ms"<<endl;
 
   RecTree tree;
+  clock_t start2 = clock();
   tree.add_data(db);
-  tree.print_size();
+  clock_t stop2 = clock();
+  double elapsed2 = (double)(stop2 - start2) * 1000.0 / CLOCKS_PER_SEC;
+  cout<<"Tiempo de construccion de la estructura: "<<elapsed2<<"ms"<<endl;
+  // tree.print_size();
 
 
   t_id_user id;
@@ -78,7 +87,8 @@ int main(int argc, char const *argv[]) {
   while (true) {
     int opcion;
     cout<<"Id del usuario:"<<endl;
-    cin>>id;
+    id =0;
+    // cin>>id;
     t_id_user id = db[0].f;
     t_ratings r = *(db[0].s);
     tree.get_sm(r, sm, rm);
@@ -87,25 +97,39 @@ int main(int argc, char const *argv[]) {
     vector<pair<t_id_user,t_similarity> > res_2;
     vector<t_id_user> res;
     vector<t_ratings*> res_r;
-    cin>>opcion;
-    cout<<"Ingrese k : ";
-    cin>>k;
+    // cin>>opcion;
+    opcion = 1;
+    cout<<"Ingrese k : "<<endl;
+    // cin>>k;
+    k =1000;
 
     if(opcion == 1){
+      clock_t start3 = clock();
+
+
       res = knn(*sm, id, k);
       res_r = items_Knn(*rm, res);
       vector<t_id_item> topk = top_k(res, res_r, k);
 
+      clock_t stop3 = clock();
+      double elapsed3 = (double)(stop3 - start3) * 1000.0 / CLOCKS_PER_SEC;
+      cout<<"Tiempo Top K:  "<<elapsed3<<"ms"<<endl;
       for(auto v : topk){
-        cout<<"Recomendados: "<< v<<endl;
+        // cout<<"Recomendados: "<< v<<endl;
       }
     }
     else if(opcion == 2){
       cout<<"Id pelicula a predecir"<<endl;
-      cin>>id_pelicula;
+      // cin>>id_pelicula;
+      id_pelicula = 10;
+      clock_t start4 = clock();
 
       res_2 = knn_sim(*sm, id, k);
       t_rating a = proyection(res_2, *rm, id_pelicula);
+
+      clock_t stop4 = clock();
+      double elapsed4 = (double)(stop4 - start4) * 1000.0 / CLOCKS_PER_SEC;
+      cout<<"Tiempo proyeccion:  "<<elapsed4<<"ms"<<endl;
       cout<<"Valor proyectado: "<<a<<endl;
 
     }
