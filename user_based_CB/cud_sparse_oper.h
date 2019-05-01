@@ -3,15 +3,15 @@
 
 #include <bits/stdc++.h>
 #include <fstream>
-#include "cuda_functions.h"
+#include "cud_defs.h"
 #include <limits>
 #include <math.h>
 
 using namespace std;
 
 // #define n_ratings 27753444
-#define n_ratings 20000263
 // #define n_users 283228
+#define n_ratings 20000263
 #define n_users 138493
 // #define n_movies 193886
 #define n_movies 131262
