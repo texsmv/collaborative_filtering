@@ -3,6 +3,9 @@
 
 // #define n_ratings 27753444
 // #define n_users 283228
+enum Measures {
+EUCLIDEAN, MANHATTAN, PEARSON, COSINE
+};
 
 
 __host__ __device__ float* float_pointer(float* values, int* ind_users, int pos_user){

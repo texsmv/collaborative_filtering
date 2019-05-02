@@ -55,22 +55,22 @@ __host__ float cosine(float* r1, int* col1, int s1, float* r2, int* col2, int s2
 
 
 __device__ float d_pearson(float* r1, int* col1, int s1, float* r2, int* col2, int s2){
-  float xy = 0;
-  float x = 0;
-  float y = 0;
-  float y_2 = 0;
-  float x_2 = 0;
+  float sum_xy = 0;
+  float sum_x = 0;
+  float sum_y = 0;
+  float sum_y2 = 0;
+  float sum_x2 = 0;
   int n = 0;
 
   int it1 = 0;
   int it2 = 0;
   while (it1 < s1 && it2 < s2) {
     if(col1[it1] == col2[it2]){
-        xy += (r1[it1] * r2[it2]);
-        x += r1[it1];
-        y += r2[it2];
-        x_2 += (r1[it1]) * (r1[it1]);
-        y_2 += (r2[it2]) * (r2[it2]);
+        sum_xy += (r1[it1] * r2[it2]);
+        sum_x += r1[it1];
+        sum_y += r2[it2];
+        sum_x2 += (r1[it1]) * (r1[it1]);
+        sum_y2 += (r2[it2]) * (r2[it2]);
         it1++; it2++;
         n++;
     }else if(col1[it1] < col2[it2]){
@@ -79,29 +79,29 @@ __device__ float d_pearson(float* r1, int* col1, int s1, float* r2, int* col2, i
       it2++;
     }
   }
-  float n1 = xy - (( x * y )/n);
-  float d1 = sqrt(x_2 -((x*x)/n));
-  float d2 = sqrt(y_2 -((y*y)/n));
-  return (n == 0) ? 0: n1 / (d1 * d2);
+  if(n == 0 || n == 1)
+    return 0;
+
+  return (sum_xy - (sum_x * sum_y / n)) / (sqrt(sum_y2 - pow(sum_y,2)/n) * sqrt(sum_x2 - pow(sum_x,2)/n));
 }
 
 __host__ float pearson(float* r1, int* col1, int s1, float* r2, int* col2, int s2){
-  float xy = 0;
-  float x = 0;
-  float y = 0;
-  float y_2 = 0;
-  float x_2 = 0;
+  float sum_xy = 0;
+  float sum_x = 0;
+  float sum_y = 0;
+  float sum_x2 = 0;
+  float sum_y2 = 0;
   int n = 0;
 
   int it1 = 0;
   int it2 = 0;
   while (it1 < s1 && it2 < s2) {
     if(col1[it1] == col2[it2]){
-        xy += (r1[it1] * r2[it2]);
-        x += r1[it1];
-        y += r2[it2];
-        x_2 += pow(r1[it1],2);
-        y_2 += pow(r2[it2],2);
+        sum_xy += r1[it1] * r2[it2];
+        sum_x += r1[it1];
+        sum_y += r2[it2];
+        sum_x2 += pow(r1[it1],2);
+        sum_y2 += pow(r2[it2],2);
         it1++; it2++;
         n++;
     }else if(col1[it1] < col2[it2]){
@@ -110,10 +110,14 @@ __host__ float pearson(float* r1, int* col1, int s1, float* r2, int* col2, int s
       it2++;
     }
   }
-  float n1 = xy - (( x * y )/n);
-  float d1 = sqrt(x_2 -(pow(x,2)/n));
-  float d2 = sqrt(y_2 -(pow(y,2)/n));
-  return (n == 0) ? 0 : n1 / (d1 * d2);
+
+  // cout<<"n: "<<n<<" sum_xy: "<<sum_xy<<" sum_x: "<<sum_x<<" sum_y: "<<sum_y<<" sum_x2: "<<sum_x2<<" sum_y2: "<<sum_y2<<endl;
+  // cout<<sum_xy - (sum_x * sum_y / n)<<" - "<<(sqrt(sum_y2 - pow(sum_y,2)/n) * sqrt(sum_x2 - pow(sum_x,2)/n)) <<endl;
+  if(n == 0 || n == 1)
+    return 0;
+
+
+  return (sum_xy - (sum_x * sum_y / n)) / (sqrt(sum_y2 - pow(sum_y,2)/n) * sqrt(sum_x2 - pow(sum_x,2)/n));
 }
 
 
