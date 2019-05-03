@@ -5,6 +5,9 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <map>
 
 using namespace std;
 
@@ -20,6 +23,21 @@ vector<string> split(const string& s, char delimiter){
 }
 
 
+class reloj{
+public:
+  void start(){c_start = clock();}
+  void stop(){c_stop = clock();}
+  double time(){return (double)(c_stop - c_start) * 1000.0 / CLOCKS_PER_SEC;}
+  clock_t c_start, c_stop;
+  double elapsed;
+  reloj(){
+
+  }
+  ~reloj(){
+
+  }
+
+};
 
 
 void n_of_users(string path, int& n_ratings, int& n_users, bool header){
@@ -29,7 +47,7 @@ void n_of_users(string path, int& n_ratings, int& n_users, bool header){
   vector<string> tokens;
 
   int id_user, curr_id_user, users_counter, ratings_counter;
-  
+
   ratings_counter = 0;  users_counter = 0;  id_user = -1;
 
   while (getline(infile, line)) {
@@ -85,6 +103,9 @@ void read_ML(string path, int n_ratings, int n_users, bool header, float*& value
     n_r ++;
     ratings_counter++;
   }
+  // cout<<users_counter<<endl;
+  row_size[n_users - 1] = n_r;
+
 }
 
 

@@ -37,6 +37,16 @@ __global__ void one2all_pearson(float* d_values, int* d_row_ind, int* d_col_ind,
   }
 }
 
+__global__ void one2all_cosine(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* d_distances, int pos_user, int n_users){
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if(i < n_users){
+    float* r1 = float_pointer(d_values, d_ind_users, pos_user);
+    int* c1 = int_pointer(d_col_ind, d_ind_users, pos_user);
+    float* r2 = float_pointer(d_values, d_ind_users, i);
+    int* c2 = int_pointer(d_col_ind, d_ind_users, i);
+    d_distances[i] = d_cosine(r1, c1, d_row_size[pos_user], r2, c2, d_row_size[i]);
+  }
+}
 /*
 distances es inicializado aqui y almacena las distancias de todos
 contra el usuario en la posicion pos_user
@@ -53,6 +63,8 @@ void distances_one2all(float*& distances, float* d_values, int* d_row_ind, int* 
     case EUCLIDEAN: one2all_euclidean<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
       break;
     case PEARSON: one2all_pearson<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
+      break;
+    case COSINE: one2all_pearson<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
       break;
   }
   CHECK(cudaDeviceSynchronize());
