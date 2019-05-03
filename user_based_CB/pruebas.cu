@@ -4,12 +4,50 @@
 #include "distances.h"
 #include "cud_sparse_oper.h"
 #include "recomender.h"
+#include "imgui.h"
+#include "imgui-SFML.h"
 
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
 using namespace std;
 
 
 int main(int argc, char const *argv[]) {
+  sf::RenderWindow window(sf::VideoMode(640, 480), "ImGui + SFML = <3");
+    window.setFramerateLimit(60);
+    ImGui::SFML::Init(window);
+
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+
+    sf::Clock deltaClock;
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            ImGui::SFML::ProcessEvent(event);
+
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+
+        ImGui::SFML::Update(window, deltaClock.restart());
+
+        ImGui::Begin("Hello, world!");
+        ImGui::Button("Look at this pretty button");
+        ImGui::End();
+
+        window.clear();
+        window.draw(shape);
+        ImGui::SFML::Render(window);
+        window.display();
+    }
+
+    ImGui::SFML::Shutdown();
+
   int n_ratings, n_users;
   int n_ratings_20, n_users_20, n_ratings_27, n_users_27;
 
@@ -71,13 +109,13 @@ int main(int argc, char const *argv[]) {
   int id_movie;
   while (true) {
     cin>>pos;
-    // cin>>id_movie;
+    cin>>id_movie;
     vector<int> ids_movies;
     vector<float> movies_ratings;
     reloj r;
     r.start();
     // k_proyection(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users,COSINE, pos, id_movie,n_users);
-    k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE, pos, 10);
+    k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE, pos, 100);
     r.stop();
     cout<<r.time()<<"ms"<<endl;
     for (size_t i = 0; i < ids_movies.size(); i++) {
