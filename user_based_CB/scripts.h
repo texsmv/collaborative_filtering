@@ -67,7 +67,7 @@ void n_of_users(string path, int& n_ratings, int& n_users, bool header){
   cout<<n_ratings<<" "<<n_users<<endl;
 }
 
-void read_ML(string path, int n_ratings, int n_users, bool header, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size){
+void read_ML_ratings(string path, int n_ratings, int n_users, bool header, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size){
   values = new float[n_ratings];
   row_ind = new int[n_ratings];
   col_ind = new int[n_ratings];
@@ -112,5 +112,24 @@ void read_ML(string path, int n_ratings, int n_users, bool header, float*& value
 }
 
 
+void read_ML_movies(string path, map<int, string>& movie_names, bool header){
+  ifstream infile(path);
+  string line;
+  if(header) getline(infile, line);
+  vector<string> tokens;
+  int movies_counter = 0;
+  int id;
+  while (getline(infile, line) ) {
+    // if(movies_counter % 10000 == 0)
+      // cout<<movies_counter<<"  "<<line<<endl;
+    tokens = split(line, ',');
+    id = atoi(tokens[0].c_str());
+    movie_names[id] = tokens[1];
+    // cout<<tokens[0]<<endl;
+    movies_counter++;
+  }
+  cout<<"Numero de peliculas: "<<movies_counter<<endl;
+
+}
 
 #endif

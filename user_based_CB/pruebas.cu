@@ -4,9 +4,11 @@
 #include "distances.h"
 #include "cud_sparse_oper.h"
 #include "recomender.h"
-
+// #include <TGUI/TGUI.hpp>
 
 using namespace std;
+
+
 
 
 int main(int argc, char const *argv[]) {
@@ -43,8 +45,10 @@ int main(int argc, char const *argv[]) {
   d_ind_users = cuda_array<int>(n_users);
   d_row_size = cuda_array<int>(n_users);
 
+  map<int, string> movies_names;
 
-  read_ML("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size);
+  read_ML_movies("../databases/ml-20m/movies.csv", movies_names, true);
+  read_ML_ratings("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size);
 
   cuda_H2D<float>(values, d_values, n_ratings);
   cuda_H2D<int>(row_ind, d_row_ind, n_ratings);
@@ -74,18 +78,20 @@ int main(int argc, char const *argv[]) {
   int pos;
   int id_movie;
   while (true) {
+    cout<<endl;
+    cout<<"input: "<<endl;
     cin>>pos;
-    cin>>id_movie;
+    // cin>>id_movie;
     vector<int> ids_movies;
     vector<float> movies_ratings;
     reloj r;
     r.start();
-    // k_proyection(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users,COSINE, pos, id_movie,n_users);
-    k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE, pos, 100);
+    k_proyection(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users,COSINE, pos, id_movie,n_users);
+    // k_ordered_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE, pos, 10, movies_names);
     r.stop();
     cout<<r.time()<<"ms"<<endl;
     for (size_t i = 0; i < ids_movies.size(); i++) {
-      cout<<ids_movies[i]<<" "<<movies_ratings[i]<<endl;
+      cout<<movies_names[ids_movies[i]]<<" "<<movies_ratings[i]<<endl;
     }
   }
 
