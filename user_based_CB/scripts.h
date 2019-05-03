@@ -51,6 +51,9 @@ void n_of_users(string path, int& n_ratings, int& n_users, bool header){
   ratings_counter = 0;  users_counter = 0;  id_user = -1;
 
   while (getline(infile, line)) {
+    if(ratings_counter % 1000000 == 0){
+      cout<<ratings_counter<<endl;
+    }
     tokens = split(line, ',');
     curr_id_user = atoi(tokens[0].c_str());
     if(id_user < curr_id_user){
@@ -61,7 +64,7 @@ void n_of_users(string path, int& n_ratings, int& n_users, bool header){
   }
   n_ratings = ratings_counter;
   n_users = users_counter;
-
+  cout<<n_ratings<<" "<<n_users<<endl;
 }
 
 void read_ML(string path, int n_ratings, int n_users, bool header, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size){
@@ -103,7 +106,7 @@ void read_ML(string path, int n_ratings, int n_users, bool header, float*& value
     n_r ++;
     ratings_counter++;
   }
-  // cout<<users_counter<<endl;
+  cout<<ratings_counter<<" - "<<users_counter<<endl;
   row_size[n_users - 1] = n_r;
 
 }

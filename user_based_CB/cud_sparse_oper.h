@@ -64,7 +64,7 @@ void distances_one2all(float*& distances, float* d_values, int* d_row_ind, int* 
       break;
     case PEARSON: one2all_pearson<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
       break;
-    case COSINE: one2all_pearson<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
+    case COSINE: one2all_cosine<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
       break;
   }
   CHECK(cudaDeviceSynchronize());

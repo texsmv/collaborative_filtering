@@ -10,7 +10,7 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
   float* distances, *dists_users;
   int* pos_users;
   distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);
-  knn_euclidean(distances, pos_users, dists_users, n_users, k, pos_user);
+  knn_pearson(distances, pos_users, dists_users, n_users, k, pos_user);
 
   for (size_t i = 0; i < k; i++) {
     cout<<"pos: "<< pos_users[i]<<" - >"<<"distancia: "<<dists_users[i]<<endl;

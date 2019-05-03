@@ -11,9 +11,18 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
   int n_ratings, n_users;
-  n_ratings = 27753444;
-  n_users = 283228;
-  // n_of_users("../databases/ml-latest/ratings.csv", n_ratings, n_users, true);
+  int n_ratings_20, n_users_20, n_ratings_27, n_users_27;
+
+  n_ratings_27 = 27753444;
+  n_users_27 = 283228;
+
+  n_ratings_20 = 20000263;
+  n_users_20 = 138493;
+
+  n_ratings = n_ratings_20;
+  n_users = n_users_20;
+  // n_ratings
+  // n_of_users("../databases/ml-20m/ratings.csv", n_ratings, n_users, true);
   // cout<<n_ratings<<" "<<n_users<<endl;
 
   float* values;
@@ -31,7 +40,7 @@ int main(int argc, char const *argv[]) {
   d_row_size = cuda_array<int>(n_users);
 
 
-  read_ML("../databases/ml-latest/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size);
+  read_ML("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size);
 
   cuda_H2D<float>(values, d_values, n_ratings);
   cuda_H2D<int>(row_ind, d_row_ind, n_ratings);
@@ -62,13 +71,13 @@ int main(int argc, char const *argv[]) {
   int id_movie;
   while (true) {
     cin>>pos;
-    cin>>id_movie;
+    // cin>>id_movie;
     vector<int> ids_movies;
     vector<float> movies_ratings;
     reloj r;
     r.start();
-    k_proyection(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users,COSINE, pos, id_movie,n_users);
-    // k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, EUCLIDEAN, pos, 10);
+    // k_proyection(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users,COSINE, pos, id_movie,n_users);
+    k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE, pos, 10);
     r.stop();
     cout<<r.time()<<"ms"<<endl;
     for (size_t i = 0; i < ids_movies.size(); i++) {
