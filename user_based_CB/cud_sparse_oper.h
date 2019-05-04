@@ -59,6 +59,8 @@ void distances_one2all(float*& distances, float* d_values, int* d_row_ind, int* 
 
   distances = new float[n_users];
   float* d_distances = cuda_array<float>(n_users);
+  reloj r;
+  r.start();
   switch (measure) {
     case EUCLIDEAN: one2all_euclidean<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
       break;
@@ -67,6 +69,8 @@ void distances_one2all(float*& distances, float* d_values, int* d_row_ind, int* 
     case COSINE: one2all_cosine<<<grid, block>>>(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, d_distances, pos_user, n_users);
       break;
   }
+  r.stop();
+  cout<<"Calculo de distancias: "<<r.time()<<"ms"<<endl;
   CHECK(cudaDeviceSynchronize());
   cuda_D2H<float>(d_distances, distances, n_users);
   CHECK(cudaDeviceSynchronize());
