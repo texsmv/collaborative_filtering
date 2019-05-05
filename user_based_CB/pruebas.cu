@@ -48,7 +48,7 @@ int main(int argc, char const *argv[]) {
   map<int, string> movies_names;
 
   read_ML_movies("../databases/ml-20m/movies.csv", movies_names, true);
-  read_ML_ratings("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size);
+  read_ML_ratings("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size, "27");
 
   cuda_H2D<float>(values, d_values, n_ratings);
   cuda_H2D<int>(row_ind, d_row_ind, n_ratings);
