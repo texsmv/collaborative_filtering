@@ -113,7 +113,7 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
 
 }
 
-float k_proyection(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int id_movie, int k){
+float k_proyection(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int id_movie, int k){
   float* distances, *dists_users;
   int* pos_users;
   distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);

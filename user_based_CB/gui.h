@@ -8,6 +8,41 @@
 
 // using namespace std;
 
+void predecir(tgui::Gui& gui, float*& d_values, int*& d_row_ind, int*& d_col_ind, int*& d_ind_users, int*& d_row_size, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, int& n_ratings, int& n_users, map<int, string>& movies_names){
+
+  // movies_names.empty();
+
+
+  tgui::EditBox::Ptr editBox_id_user = gui.get<tgui::EditBox>("editbox_id_user");
+  tgui::EditBox::Ptr editBox_id_item = gui.get<tgui::EditBox>("editbox_id_item");
+  tgui::EditBox::Ptr editBox_k = gui.get<tgui::EditBox>("editbox_k");
+  tgui::ComboBox::Ptr comboBox_metrics = gui.get<tgui::ComboBox>("comboBox_metrics");
+  tgui::Label::Ptr label_prediction = gui.get<tgui::Label>("label_prediction");
+
+
+  int user_pos = atoi(std::string(editBox_id_user->getText()).c_str()) - 1;
+  int item_id = atoi(std::string(editBox_id_item->getText()).c_str());
+  int k = atoi(std::string(editBox_k->getText()).c_str());
+  int measure;
+  float prediction;
+
+  // if(comboBox_metrics->getSelectedItem() == "Euclidean")
+  //   measure = EUCLIDEAN;
+  // else if(comboBox_metrics->getSelectedItem() == "Pearson")
+  //   measure = PEARSON;
+  // else
+    measure = COSINE;
+
+
+  reloj r;
+  r.start();
+  prediction = k_proyection(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, item_id, n_users);
+  r.stop();
+  cout<<"Tiempo de prediccion: "<<r.time()<<"ms"<<endl;
+  label_prediction->setText(to_string(prediction));
+
+}
+
 
 void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ratings, float*& d_values, int*& d_row_ind, int*& d_col_ind, int*& d_ind_users, int*& d_row_size, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, int& n_ratings, int& n_users, map<int, string>& movies_names){
   // cout<<"recomendar: "<<a<<endl;
@@ -43,7 +78,7 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
   r.stop();
   cout<<"Tiempo de recomendacion: "<<r.time()<<"ms"<<endl;
   for (size_t i = 0; i < ids_movies.size(); i++) {
-    list_movies->addItem(movies_names[ids_movies[i]] + " -> " + to_string(movies_ratings[i]));
+    list_movies->addItem(to_string(ids_movies[i]) + " : " + movies_names[ids_movies[i]] + " -> " + to_string(movies_ratings[i]));
     // cout<<movies_names[ids_movies[i]]<<" "<<movies_ratings[i]<<endl;
   }
 }
@@ -142,6 +177,7 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
   tgui::Label::Ptr label_id_item = tgui::Label::create();
   tgui::Label::Ptr label_k = tgui::Label::create();
   tgui::Label::Ptr label_metric = tgui::Label::create();
+  tgui::Label::Ptr label_prediction = tgui::Label::create();
 
   gui.add(load_button, "LoadButton");
   gui.add(recommend_button, "RecommendButton");
@@ -160,6 +196,7 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
   gui.add(label_metric, "label_metrics");
   gui.add(label_recommend, "label_recommend");
   gui.add(label_predict, "label_predict");
+  gui.add(label_prediction, "label_prediction");
 
   gui.add(comboBox_metrics, "comboBox_metrics");
 
@@ -215,6 +252,7 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
 
   predict_button->setPosition("label_predict.right + 70", "label_predict.top");
   predict_button->setText("Proyectar");
+  label_prediction->setPosition("ProyectButton.right + 20", "ProyectButton.top");
   label_id_item->setPosition("label_predict.left", "label_predict.top + 40");
   label_id_item->setText("Id del item:");
   editBox_id_item->setPosition("label_id_item.right + 65", "label_id_item.top");
@@ -230,6 +268,11 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
   std::ref(movies_names));
 
   recommend_button->connect("pressed", recomendar, std::ref(gui), std::ref(ids_movies), std::ref(movies_ratings),
+  std::ref(d_values), std::ref(d_row_ind), std::ref(d_col_ind), std::ref(d_ind_users), std::ref(d_row_size),
+  std::ref(values), std::ref(row_ind), std::ref(col_ind), std::ref(ind_users), std::ref(row_size),
+  std::ref(n_ratings), std::ref(n_users), std::ref(movies_names));
+
+  predict_button->connect("pressed", predecir, std::ref(gui),
   std::ref(d_values), std::ref(d_row_ind), std::ref(d_col_ind), std::ref(d_ind_users), std::ref(d_row_size),
   std::ref(values), std::ref(row_ind), std::ref(col_ind), std::ref(ind_users), std::ref(row_size),
   std::ref(n_ratings), std::ref(n_users), std::ref(movies_names));
