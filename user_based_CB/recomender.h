@@ -21,9 +21,9 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
 
   r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
   r2.stop();
   cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
 
@@ -59,16 +59,25 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
 }
 
 void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k, map<int, string>& movies_names){
+  cout<<endl;
+  cout<<"K recomendaciones ordenadas: "<<endl;
+  cout<<"--------------------------------"<<endl;
   float* distances, *dists_users;
   int* pos_users;
+  reloj r, r2;
+  r.start();
   distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);
+  r.stop();
+  cout<<"Calculo de distancias: "<<r.time()<<"ms"<<endl;
+
+  r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less(distances, pos_users, dists_users, n_users, k, pos_user);
-  // for (size_t i = 0; i < k; i++) {
-  //   cout<<"pos: "<< pos_users[i]<<" - >"<<"distancia: "<<dists_users[i]<<endl;
-  // }
+    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
+  r2.stop();
+  cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
+
 
 
   map<string, pair<float, int>> ord_map;
@@ -110,17 +119,33 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
     movies_ratings.push_back(it->second.first / it->second.second);
     // cout<<"id: "<<it->first<<" -> "<<it->second.first / it->second.second<<endl;
   }
+  cout<<"--------------------------------"<<endl;
+  cout<<endl<<endl;
 
 }
 
 float k_proyection(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int id_movie, int k){
+  cout<<endl;
+  cout<<"Prediccion: "<<endl;
+  cout<<"--------------------------------"<<endl;
   float* distances, *dists_users;
   int* pos_users;
+  reloj r, r2;
+  r.start();
   distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);
+  r.stop();
+  cout<<"Calculo de distancias: "<<r.time()<<"ms"<<endl;
+
+  r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
+  r2.stop();
+  cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
+
+
+
   vector<int> ids_s;
   vector<float> distances_s;
   vector<float> valoraciones_s;
@@ -159,8 +184,6 @@ float k_proyection(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_u
     // cout<<distances_s[i]<<"  "<<valoraciones_s[i]<<endl;
     recomendado += (distances_s[i] / sum) * valoraciones_s[i];
   }
-  cout<<"n: "<<n<<" "<<"Suma: "<<sum<<endl;
-  cout<<recomendado<<endl;
   return recomendado;
 }
 

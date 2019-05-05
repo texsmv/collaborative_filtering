@@ -36,7 +36,7 @@ __device__ float d_cosine(float* r1, int* col1, int s1, float* r2, int* col2, in
       }
     }
   }
-  return (sum_x2 == 0 || sum_y2 == 0)? 0 : (sum_xy / (sqrt(sum_x2)*sqrt(sum_y2)));
+  return (sum_x2 == 0 || sum_y2 == 0 || n)? 0 : (sum_xy / (sqrt(sum_x2)*sqrt(sum_y2)));
 }
 
 __host__ float cosine(float* r1, int* col1, int s1, float* r2, int* col2, int s2){

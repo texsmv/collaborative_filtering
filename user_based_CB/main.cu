@@ -1,7 +1,27 @@
 #include "gui.h"
+#include <thrust/sort.h>
+
 
 
 int main(){
+
+  int N = 4;
+  float* keys = new float[4];
+  int* valuess = new int[4];
+  keys[0] = -1.23;
+  keys[1] = 2.23;
+  keys[2] = 3.23;
+  keys[3] = -23.23;
+
+  for (size_t i = 0; i < 4; i++) {
+    valuess[i] = i;
+  }
+
+  thrust::sort_by_key(keys, keys + N, valuess);
+
+  for (size_t i = 0; i < N; i++) {
+    cout<<keys[i]<<" "<<valuess[i]<<endl;
+  }
 
 
   int n_ratings, n_users;
