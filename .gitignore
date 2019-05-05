@@ -2,7 +2,6 @@ ml-lates*
 movielens*
 foo*
 *.csv
-*.txt
 exe*
 ml-*
 user_based_CB/binary_files/*
