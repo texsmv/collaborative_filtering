@@ -18,21 +18,21 @@ __device__ float d_cosine(float* r1, int* col1, int s1, float* r2, int* col2, in
     if(it1 < s1 && it2 < s2){
       if(col1[it1] == col2[it2]){
         sum_xy += (r1[it1] * r2[it2]);
-        sum_x2+= pow(r1[it1],2);
-        sum_y2+= pow(r2[it2],2);
+        sum_x2+= (r1[it1] * r1[it1]);
+        sum_y2+= (r2[it2] * r2[it2]);
         it1++; it2++;
         // n++;
       }else if(col1[it1] < col2[it2]){
-        it1++; sum_x2 += pow(r1[it1],2);
+        it1++; sum_x2 += (r1[it1] * r1[it1]);
       }else{
-        it2++; sum_y2+= pow(r2[it2],2);
+        it2++; sum_y2+= (r2[it2] * r2[it2]);
       }
     }
     else{
       if(it1 < s1){
-        it1++;  sum_x2 += pow(r1[it1],2);
+        it1++;  sum_x2 += (r1[it1] * r1[it1]);
       }else{
-        it2++;  sum_y2+= pow(r2[it2],2);
+        it2++;  sum_y2+= (r2[it2] * r2[it2]);
       }
     }
   }
@@ -161,12 +161,12 @@ __host__ float pearson(float* r1, int* col1, int s1, float* r2, int* col2, int s
   int it2 = 0;
   while (it1 < s1 && it2 < s2) {
     if(col1[it1] == col2[it2]){
-        cout<<"val1: "<<r1[it1]<<" val2: "<<r2[it2]<<endl;;
+        // cout<<"val1: "<<r1[it1]<<" val2: "<<r2[it2]<<endl;;
         sum_xy += (r1[it1] * r2[it2]);
         sum_x += r1[it1];
         sum_y += r2[it2];
-        sum_x2 += pow(r1[it1],2);
-        sum_y2 += pow(r2[it2],2);
+        sum_x2 += (r1[it1] * r1[it1]);
+        sum_y2 += (r2[it2] * r2[it2]);
         it1++; it2++;
         n++;
     }else if(it1 < s1){
@@ -206,7 +206,7 @@ __device__ float d_euclidean(float* r1, int* col1, int s1, float* r2, int* col2,
   int n = 0;
   while (it1 < s1 && it2 < s2) {
     if(col1[it1] == col2[it2]){
-      sum += (r1[it1] - r2[it2]) * (r1[it1] - r2[it2]);
+      sum += ((r1[it1] - r2[it2]) * (r1[it1] - r2[it2]));
       it1++; it2++; n++;
     }else if(it1 < s1){
       it1++;

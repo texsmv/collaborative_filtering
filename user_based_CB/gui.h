@@ -44,7 +44,7 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
   cout<<"Tiempo de recomendacion: "<<r.time()<<"ms"<<endl;
   for (size_t i = 0; i < ids_movies.size(); i++) {
     list_movies->addItem(movies_names[ids_movies[i]] + " -> " + to_string(movies_ratings[i]));
-    cout<<movies_names[ids_movies[i]]<<" "<<movies_ratings[i]<<endl;
+    // cout<<movies_names[ids_movies[i]]<<" "<<movies_ratings[i]<<endl;
   }
 }
 
@@ -171,6 +171,7 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
   list_dbs->addItem("Movie Lens 27M");
   list_dbs->addItem("Movie Lens 20M");
   list_dbs->setPosition("label_dataset.left", "label_dataset.top + 30");
+  list_dbs->setSelectedItem("Movie Lens 27M");
 
   load_button->setText("Cargar dataset");
   load_button->setPosition("label_dataset.left", "label_dataset.top + 190");
