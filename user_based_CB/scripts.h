@@ -10,6 +10,7 @@
 #include <map>
 #include <fstream>
 
+#include "structures.h"
 
 using namespace std;
 
@@ -167,53 +168,16 @@ void read_ML_ratings(string path, int n_ratings, int n_users, bool header, float
 
 }
 
-
-void write_ML_ratings(string path, int n_ratings, int n_users, bool header, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size){
-  values = new float[n_ratings];
-  row_ind = new int[n_ratings];
-  col_ind = new int[n_ratings];
-  ind_users = new int[n_users];
-  row_size = new int[n_users];
-
-
-  ifstream infile(path);
-  string line;
-  if(header) getline(infile, line);
-  vector<string> tokens;
-
-  int id_user, curr_id_user, curr_id_item, users_counter, ratings_counter, n_r;
-  float curr_rating;
-  ratings_counter = 0;  users_counter = 0;  id_user = -1; n_r = 0;
-
-  while (getline(infile, line)) {
-    if(ratings_counter % 1000000 == 0)
-      cout<<ratings_counter<<endl;
-    tokens = split(line, ',');
-    curr_id_user = atoi(tokens[0].c_str());
-    curr_id_item = atoi(tokens[1].c_str());
-    curr_rating = atof(tokens[2].c_str());
-    if(id_user < curr_id_user){
-      if(id_user != -1)
-        row_size[users_counter - 1] = n_r;
-      n_r = 0;
-      ind_users[users_counter] = ratings_counter;
-      id_user = curr_id_user;
-      users_counter++;
+void mapa_peliculas(int n_ratings, int n_users, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, map<int, float>*& map_movies){
+  map_movies = new map<int, float>[n_users];
+  for (size_t i = 0; i < n_users; i++) {
+    float* vals = float_pointer(values, ind_users, i);
+    int* ids_movies = int_pointer(col_ind, ind_users, i);
+    for (size_t j = 0; j < row_size[i]; j++) {
+      map_movies[i][ids_movies[j]] = vals[j];
     }
-
-    values[ratings_counter] = curr_rating;
-    row_ind[ratings_counter] = curr_id_user;
-    col_ind[ratings_counter] = curr_id_item;
-    n_r ++;
-    ratings_counter++;
   }
-  cout<<ratings_counter<<" - "<<users_counter<<endl;
-  row_size[n_users - 1] = n_r;
-
-
-
 }
-
 
 void read_ML_movies(string path, map<int, string>& movie_names, bool header){
   ifstream infile(path);

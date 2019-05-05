@@ -37,6 +37,7 @@ int main(){
   int * d_ind_users, * d_row_size;
 
   map<int, string> movies_names;
+  map<int, float>* map_movies;
 
 
   bool load_data = true;
@@ -53,7 +54,7 @@ int main(){
   inicializar_gui(std::ref(gui), std::ref(ids_movies), std::ref(movies_ratings),
   std::ref(d_values), std::ref(d_row_ind), std::ref(d_col_ind), std::ref(d_ind_users), std::ref(d_row_size),
   std::ref(values), std::ref(row_ind), std::ref(col_ind), std::ref(ind_users), std::ref(row_size),
-  std::ref(n_ratings), std::ref(n_users), std::ref(movies_names), std::ref(load_data));
+  std::ref(n_ratings), std::ref(n_users), std::ref(movies_names), std::ref(load_data), std::ref(map_movies));
 
   while (window.isOpen()){
 

@@ -73,8 +73,8 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
   cout<<n_ratings<<" "<<n_users<<endl;
   reloj r;
   r.start();
-  k_ordered_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k, movies_names);
-  // k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
+  // k_ordered_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k, movies_names);
+  k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
   r.stop();
   cout<<"Tiempo de recomendacion: "<<r.time()<<"ms"<<endl;
   for (size_t i = 0; i < ids_movies.size(); i++) {
@@ -86,7 +86,7 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
 
 
 
-void load_dataset(tgui::ListBox::Ptr list_dbs, bool& load, int& n_ratings, int& n_users, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, float*& d_values, int*& d_row_ind, int*& d_col_ind, int*& d_ind_users, int*& d_row_size, map<int, string>& movies_names){
+void load_dataset(tgui::ListBox::Ptr list_dbs, bool& load, int& n_ratings, int& n_users, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, float*& d_values, int*& d_row_ind, int*& d_col_ind, int*& d_ind_users, int*& d_row_size, map<int, string>& movies_names, map<int, float>*& map_movies){
   string option = list_dbs->getSelectedItem();
   cout<<option<<endl;
 
@@ -104,6 +104,10 @@ void load_dataset(tgui::ListBox::Ptr list_dbs, bool& load, int& n_ratings, int& 
       read_ML_ratings("../databases/ml-latest/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size, "27");
       r.stop();
       cout<<"Tiempo de carga: "<<r.time()<<endl;
+      // r.start();
+      // mapa_peliculas(n_ratings, n_users, values, row_ind, col_ind, ind_users, row_size, map_movies);
+      // r.stop();
+      // cout<<"Tiempo map de movies: "<<r.time()<<endl;
     }
     else if(option == "Movie Lens 20M"){
       n_ratings = 20000263;
@@ -142,7 +146,7 @@ void load_dataset(tgui::ListBox::Ptr list_dbs, bool& load, int& n_ratings, int& 
 
 
 
-void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ratings, float*& d_values, int*& d_row_ind, int*& d_col_ind, int*& d_ind_users, int*& d_row_size, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, int& n_ratings, int& n_users, map<int, string>& movies_names, bool& load_data){
+void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ratings, float*& d_values, int*& d_row_ind, int*& d_col_ind, int*& d_ind_users, int*& d_row_size, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, int& n_ratings, int& n_users, map<int, string>& movies_names, bool& load_data, map<int, float>*& map_movies){
   tgui::Theme theme{"Black.txt"};
   tgui::Theme::setDefault(&theme);
 
@@ -265,7 +269,7 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
   std::ref(n_ratings), std::ref(n_users), std::ref(values), std::ref(row_ind),
   std::ref(col_ind), std::ref(ind_users), std::ref(row_size), std::ref(d_values),
   std::ref(d_row_ind), std::ref(d_col_ind), std::ref(d_ind_users), std::ref(d_row_size),
-  std::ref(movies_names));
+  std::ref(movies_names), std::ref(map_movies));
 
   recommend_button->connect("pressed", recomendar, std::ref(gui), std::ref(ids_movies), std::ref(movies_ratings),
   std::ref(d_values), std::ref(d_row_ind), std::ref(d_col_ind), std::ref(d_ind_users), std::ref(d_row_size),

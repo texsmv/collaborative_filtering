@@ -27,6 +27,16 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
   r2.stop();
   cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
 
+  float* vals_user = float_pointer(values, ind_users, pos_user);
+  int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
+
+  map<int, float> map_user;
+  cout<<"vistos: "<<endl;
+  for (size_t i = 0; i < row_size[pos_user]; i++) {
+    map_user[ids_movies_user[i]] = vals_user[i];
+    cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+  }
+
   map<int, pair<float, int> > movies;
   // float* t_ratings = new float[k]; int* t_ids = new int[k];
   for (size_t i = 0; i < k; i++) {
@@ -35,7 +45,9 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
     float* vals = float_pointer(values, ind_users, pos_users[i]);
     int* ids_movies = int_pointer(col_ind, ind_users, pos_users[i]);
     for (size_t j = 0; j < row_size[pos_users[i]]; j++) {
-      pq.push(make_pair(vals[j], ids_movies[j]));
+      auto it = map_user.find(ids_movies[j]);
+      if(it == map_user.end())
+        pq.push(make_pair(vals[j], ids_movies[j]));
     }
     par_fi pelicula = pq.top();
     auto pelicula_it = movies.find(pelicula.second);
@@ -72,11 +84,21 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
 
   r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_less(distances, pos_users, dists_users, n_users, k, pos_user);
   r2.stop();
   cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
+
+  float* vals_user = float_pointer(values, ind_users, pos_user);
+  int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
+
+  map<int, float> map_user;
+  cout<<"vistos: "<<endl;
+  for (size_t i = 0; i < row_size[pos_user]; i++) {
+    map_user[ids_movies_user[i]] = vals_user[i];
+    cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+  }
 
 
 
@@ -89,7 +111,9 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
     float* vals = float_pointer(values, ind_users, pos_users[i]);
     int* ids_movies = int_pointer(col_ind, ind_users, pos_users[i]);
     for (size_t j = 0; j < row_size[pos_users[i]]; j++) {
-      pq.push(make_pair(vals[j], ids_movies[j]));
+      auto it = map_user.find(ids_movies[j]);
+      if(it == map_user.end())
+        pq.push(make_pair(vals[j], ids_movies[j]));
     }
 
     par_fi pelicula = pq.top();
