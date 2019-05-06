@@ -73,8 +73,10 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
   cout<<n_ratings<<" "<<n_users<<endl;
   reloj r;
   r.start();
-  // k_ordered_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k, movies_names);
-  k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
+  // k_ordered_recomendations_1(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k, movies_names);
+  // k_recomendations_1(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
+  // k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
+  k_recomendations_repetidos(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
   r.stop();
   cout<<"Tiempo de recomendacion: "<<r.time()<<"ms"<<endl;
   for (size_t i = 0; i < ids_movies.size(); i++) {

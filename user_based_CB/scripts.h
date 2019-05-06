@@ -102,19 +102,16 @@ void read_ML_ratings(string path, int n_ratings, int n_users, bool header, float
   row_size = new int[n_users];
 
   if(fexists(path_b + "values_" + version) && fexists(path_b + "row_ind_" + version) && fexists(path_b + "col_ind_" + version) && fexists(path_b + "ind_users_" + version) && fexists(path_b + "row_size_" + version)){
-    cout<<"Writing values"<<endl;
+    cout<<"Reading values"<<endl;
     read_array<float>(values, n_ratings, path_b + "values_" + version);
-    cout<<"Writing row_ind"<<endl;
+    cout<<"Reading row_ind"<<endl;
     read_array<int>(row_ind, n_ratings, path_b + "row_ind_" + version);
-    cout<<"Writing col_ind"<<endl;
+    cout<<"Reading col_ind"<<endl;
     read_array<int>(col_ind, n_ratings, path_b + "col_ind_" + version);
-    cout<<"Writing ind_users"<<endl;
+    cout<<"Reading ind_users"<<endl;
     read_array<int>(ind_users, n_users, path_b + "ind_users_" + version);
-    cout<<"Writing row_size"<<endl;
+    cout<<"Reading row_size"<<endl;
     read_array<int>(row_size, n_users, path_b + "row_size_" + version);
-    for (size_t i = 0; i < 10; i++) {
-      cout<<values[i]<<" -> "<<row_ind[i]<<" - "<<col_ind[i]<<endl;
-    }
   }
   else{
     ifstream infile(path);

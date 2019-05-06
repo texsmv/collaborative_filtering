@@ -5,25 +5,6 @@
 
 int main(){
 
-  int N = 4;
-  float* keys = new float[4];
-  int* valuess = new int[4];
-  keys[0] = -1.23;
-  keys[1] = 2.23;
-  keys[2] = 3.23;
-  keys[3] = -23.23;
-
-  for (size_t i = 0; i < 4; i++) {
-    valuess[i] = i;
-  }
-
-  thrust::sort_by_key(keys, keys + N, valuess);
-
-  for (size_t i = 0; i < N; i++) {
-    cout<<keys[i]<<" "<<valuess[i]<<endl;
-  }
-
-
   int n_ratings, n_users;
   n_ratings = 0;
   n_users = 0;
@@ -47,7 +28,7 @@ int main(){
 
   // User interface
 
-  sf::RenderWindow window{{800, 600}, "Window"};
+  sf::RenderWindow window{{900, 600}, "Window"};
 
   tgui::Gui gui{window}; // Create the gui and attach it to the window
 
@@ -63,20 +44,14 @@ int main(){
       {
           if (event.type == sf::Event::Closed)
               window.close();
-          if (event.type == sf::Event::KeyPressed)
-          {
-              cout<<"Key pressed"<<endl;
-              if (event.key.code == sf::Keyboard::Escape)
-              {
-                cout<<"n_ratings: "<<n_ratings<<"n_users: "<<n_users<<endl;
-                // load_button->disconnectAll();
-
-                // recommend_button->disconnectAll();
-
-
-
-              }
-          }
+          // if (event.type == sf::Event::KeyPressed)
+          // {
+          //     if (event.key.code == sf::Keyboard::Escape)
+          //     {
+          //
+          //
+          //     }
+          // }
 
 
 

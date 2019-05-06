@@ -7,6 +7,77 @@
 #include <tuple>
 
 
+void k_recomendations_repetidos(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k){
+  cout<<endl;
+  cout<<"K recomendaciones: "<<endl;
+  cout<<"--------------------------------"<<endl;
+  float* distances, *dists_users;
+  int* pos_users;
+  reloj r, r2;
+  r.start();
+  distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);
+  r.stop();
+  cout<<"Calculo de distancias: "<<r.time()<<"ms"<<endl;
+
+  r2.start();
+  if((measure == PEARSON) || (measure == COSINE))
+    knn_greater_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
+  else if(measure == EUCLIDEAN)
+    knn_less_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
+  r2.stop();
+  cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
+
+  float* vals_user = float_pointer(values, ind_users, pos_user);
+  int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
+
+  map<int, float> map_user;
+  // cout<<"vistos: "<<endl;
+  for (size_t i = 0; i < row_size[pos_user]; i++) {
+    map_user[ids_movies_user[i]] = vals_user[i];
+    // cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+  }
+
+  map<int, tuple<float, int, bool> > movies;
+  // float* t_ratings = new float[k]; int* t_ids = new int[k];
+  for (size_t i = 0; i < k; i++) {
+    // cout<<pos_users[i]<<"numero de ratings"<<row_size[pos_users[i]]<<endl;
+    // priority_queue<par_fi, vector<par_fi>, less<par_fi> > pq;
+    float* vals = float_pointer(values, ind_users, pos_users[i]);
+    int* ids_movies = int_pointer(col_ind, ind_users, pos_users[i]);
+    for (size_t j = 0; j < row_size[pos_users[i]]; j++) {
+      auto it = map_user.find(ids_movies[j]);
+      if(it == map_user.end()){
+        auto pelicula_it = movies.find(ids_movies[j]);
+        if(pelicula_it == movies.end()){
+          if(vals[j] >= 4)
+            movies[ids_movies[j]] = make_tuple(vals[j], 1, true);
+          else
+            movies[ids_movies[j]] = make_tuple(vals[j], 1, false);
+        }
+        else{
+          get<0>(pelicula_it->second) += vals[j];
+          get<1>(pelicula_it->second) += 1;
+          if(vals[j] >= 4){
+            get<2>(pelicula_it->second) = true;
+          }
+
+        }
+      }
+
+    }
+  }
+
+  for (auto it = movies.begin(); it != movies.end(); it++) {
+    if(get<2>(it->second) == true){
+      ids_movies.push_back(it->first);
+      movies_ratings.push_back(get<0>(it->second) / get<1>(it->second));
+    }
+    // cout<<"id: "<<it->first<<" -> "<<it->second.first / it->second.second<<endl;
+  }
+  cout<<"--------------------------------"<<endl;
+  cout<<endl<<endl;
+}
+
 void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k){
   cout<<endl;
   cout<<"K recomendaciones: "<<endl;
@@ -78,7 +149,70 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
   cout<<endl<<endl;
 }
 
-void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k, map<int, string>& movies_names){
+void k_recomendations_1(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k){
+  cout<<endl;
+  cout<<"K recomendaciones: "<<endl;
+  cout<<"--------------------------------"<<endl;
+  float* distances, *dists_users;
+  int* pos_users;
+  reloj r, r2;
+  r.start();
+  distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);
+  r.stop();
+  cout<<"Calculo de distancias: "<<r.time()<<"ms"<<endl;
+
+  r2.start();
+  if((measure == PEARSON) || (measure == COSINE))
+    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
+  else if(measure == EUCLIDEAN)
+    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
+  r2.stop();
+  cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
+
+  float* vals_user = float_pointer(values, ind_users, pos_user);
+  int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
+
+  map<int, float> map_user;
+  // cout<<"vistos: "<<endl;
+  for (size_t i = 0; i < row_size[pos_user]; i++) {
+    map_user[ids_movies_user[i]] = vals_user[i];
+    // cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+  }
+
+  map<int, pair<float, int> > movies;
+  // float* t_ratings = new float[k]; int* t_ids = new int[k];
+  for (size_t i = 0; i < k; i++) {
+    // cout<<pos_users[i]<<"numero de ratings"<<row_size[pos_users[i]]<<endl;
+    priority_queue<par_fi, vector<par_fi>, less<par_fi> > pq;
+    float* vals = float_pointer(values, ind_users, pos_users[i]);
+    int* ids_movies = int_pointer(col_ind, ind_users, pos_users[i]);
+    for (size_t j = 0; j < row_size[pos_users[i]]; j++) {
+      auto it = map_user.find(ids_movies[j]);
+      if(it == map_user.end())
+        pq.push(make_pair(vals[j], ids_movies[j]));
+    }
+    par_fi pelicula = pq.top();
+    auto pelicula_it = movies.find(pelicula.second);
+    if(pelicula_it == movies.end()){
+      movies[pelicula.second] = make_pair(pelicula.first, 1);
+      // movies.push_back(make_pair(pelicula.second, pelicula.first));
+    }
+    else{
+      pelicula_it->second.first += pelicula.first;
+      pelicula_it->second.second += 1;
+    }
+  }
+
+  for (auto it = movies.begin(); it != movies.end(); it++) {
+    ids_movies.push_back(it->first);
+    movies_ratings.push_back(it->second.first / it->second.second);
+    // cout<<"id: "<<it->first<<" -> "<<it->second.first / it->second.second<<endl;
+  }
+  cout<<"--------------------------------"<<endl;
+  cout<<endl<<endl;
+}
+
+void k_ordered_recomendations_1(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k, map<int, string>& movies_names){
   cout<<endl;
   cout<<"K recomendaciones ordenadas: "<<endl;
   cout<<"--------------------------------"<<endl;
@@ -116,6 +250,87 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
   for (size_t i = 0; i < k; i++) {
     // cout<<pos_users[i]<<"  numero de ratings: "<<row_size[pos_users[i]]<<endl;
     priority_queue<par_fi, vector<par_fi>, less<par_fi> > pq;
+    float* vals = float_pointer(values, ind_users, pos_users[i]);
+    int* ids_movies = int_pointer(col_ind, ind_users, pos_users[i]);
+    for (size_t j = 0; j < row_size[pos_users[i]]; j++) {
+      auto it = map_user.find(ids_movies[j]);
+      if(it == map_user.end())
+        pq.push(make_pair(vals[j], ids_movies[j]));
+    }
+    if(!pq.empty()){
+      par_fi pelicula = pq.top();
+      while (pq.top().first == pelicula.first && !pq.empty()) {
+        par_fi curr_peli = pq.top();
+        ord_map[movies_names[curr_peli.second]] = curr_peli;
+        pq.pop();
+      }
+
+      pelicula = (*(ord_map.begin())).second;
+
+      auto pelicula_it = movies.find(pelicula.second);
+      if(pelicula_it == movies.end()){
+        movies[pelicula.second] = make_pair(pelicula.first, 1);
+        // movies.push_back(make_pair(pelicula.second, pelicula.first));
+      }
+      else{
+        pelicula_it->second.first += pelicula.first;
+        pelicula_it->second.second += 1;
+      }
+
+    }
+
+
+
+  }
+
+  for (auto it = movies.begin(); it != movies.end(); it++) {
+    ids_movies.push_back(it->first);
+    movies_ratings.push_back(it->second.first / it->second.second);
+    // cout<<"id: "<<it->first<<" -> "<<it->second.first / it->second.second<<endl;
+  }
+  cout<<"--------------------------------"<<endl;
+  cout<<endl<<endl;
+
+}
+
+
+void k_ordered_recomendations2(vector<int>& ids_movies, vector<float>& movies_ratings, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, float* values, int* row_ind, int* col_ind, int* ind_users, int* row_size, int n_ratings, int n_users, int measure, int pos_user, int k, map<int, string>& movies_names){
+  cout<<endl;
+  cout<<"K recomendaciones ordenadas: "<<endl;
+  cout<<"--------------------------------"<<endl;
+  float* distances, *dists_users;
+  int* pos_users;
+  reloj r, r2;
+  r.start();
+  distances_one2all(distances, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, n_users, measure, pos_user);
+  r.stop();
+  cout<<"Calculo de distancias: "<<r.time()<<"ms"<<endl;
+
+  r2.start();
+  if((measure == PEARSON) || (measure == COSINE))
+    knn_greater_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
+  else if(measure == EUCLIDEAN)
+    knn_less_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
+  r2.stop();
+  cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
+
+  float* vals_user = float_pointer(values, ind_users, pos_user);
+  int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
+
+  map<int, float> map_user;
+  // cout<<"vistos: "<<endl;
+  for (size_t i = 0; i < row_size[pos_user]; i++) {
+    map_user[ids_movies_user[i]] = vals_user[i];
+    // cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+  }
+
+  map<string, pair<float, int>> ord_map;
+  map<int, pair<float, int> > movies;
+  // float* t_ratings = new float[k]; int* t_ids = new int[k];
+  for (size_t i = 0; i < k; i++) {
+    // cout<<pos_users[i]<<"  numero de ratings: "<<row_size[pos_users[i]]<<endl;
+    priority_queue<par_fi, vector<par_fi>, less<par_fi> > pq;
+
     float* vals = float_pointer(values, ind_users, pos_users[i]);
     int* ids_movies = int_pointer(col_ind, ind_users, pos_users[i]);
     for (size_t j = 0; j < row_size[pos_users[i]]; j++) {
