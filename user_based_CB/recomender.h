@@ -49,16 +49,24 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
       if(it == map_user.end())
         pq.push(make_pair(vals[j], ids_movies[j]));
     }
-    par_fi pelicula = pq.top();
-    auto pelicula_it = movies.find(pelicula.second);
-    if(pelicula_it == movies.end()){
-      movies[pelicula.second] = make_pair(pelicula.first, 1);
-      // movies.push_back(make_pair(pelicula.second, pelicula.first));
+    if(!pq.empty()){
+      par_fi pelicula = pq.top();
+      while (pelicula.first > 4 && !pq.empty()) {
+        auto pelicula_it = movies.find(pelicula.second);
+        if(pelicula_it == movies.end()){
+          movies[pelicula.second] = make_pair(pelicula.first, 1);
+          // movies.push_back(make_pair(pelicula.second, pelicula.first));
+        }
+        else{
+          pelicula_it->second.first += pelicula.first;
+          pelicula_it->second.second += 1;
+        }
+        pq.pop();
+        pelicula = pq.top();
+      }
     }
-    else{
-      pelicula_it->second.first += pelicula.first;
-      pelicula_it->second.second += 1;
-    }
+
+
   }
 
   for (auto it = movies.begin(); it != movies.end(); it++) {
