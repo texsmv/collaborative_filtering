@@ -2,7 +2,9 @@
 #define KNN_H
 
 #include <thrust/sort.h>
-
+#include <thrust/device_vector.h>
+#include <thrust/generate.h>
+#include <thrust/copy.h>
 
 
 
@@ -60,7 +62,7 @@ void knn_greater_std(float* distances, int*& pos_users, float*& dists_users, int
   vector< pair<float, int> >v;
 
   for (size_t i = 0; i < n_users; i++) {
-    if(i != user_pos)
+    if(i != user_pos && distances[i] != 0)
       v.push_back(make_pair(distances[i], i));
   }
   sort(v.begin(),v.end(), greater<pair<float, int> >());
@@ -92,19 +94,33 @@ void knn_less_std(float* distances, int*& pos_users, float*& dists_users, int n_
 
 // Cuda knn, not used beacuse it has worse performance
 void knn_less_cuda(float* distances, int*& pos_users, float*& dists_users, int n_users, int k, int user_pos){
-  float* t_distances; int* t_pos_users;
-  t_distances = new float[n_users]; t_pos_users = new int[n_users];
+  // float* t_distances; int* t_pos_users;
+  // t_distances = new float[n_users]; t_pos_users = new int[n_users];
   pos_users = new int[k]; dists_users = new float[k];
 
+  thrust::host_vector<float> t_distances(n_users);
+  thrust::host_vector<int> t_pos_users(n_users);
+  thrust::device_vector<float> d_t_distances;
+  thrust::device_vector<int> d_t_pos_users;
+
+
   for (size_t i = 0; i < n_users; i++) {
-    t_distances[i] = distances[i];
-    t_pos_users[i] = i;
+    t_distances[i] = (distances[i]);
+    t_pos_users[i] = (i);
   }
+  d_t_distances = t_distances;
+  d_t_pos_users = t_pos_users;
+
+
   reloj r;
   r.start();
-  thrust::sort_by_key(t_distances, t_distances + n_users, t_pos_users);
+  thrust::sort_by_key(d_t_distances.begin(), d_t_distances.begin() + n_users, d_t_pos_users.begin());
+
+  thrust::copy(d_t_distances.begin(), d_t_distances.end(), t_distances.begin());
+  thrust::copy(d_t_pos_users.begin(), d_t_pos_users.end(), t_pos_users.begin());
   r.stop();
   cout<<"Cuda knns: "<<r.time()<<"ms"<<endl;
+
   int counter = 0;
   int i = 0;
   while (counter < k) {
@@ -117,6 +133,45 @@ void knn_less_cuda(float* distances, int*& pos_users, float*& dists_users, int n
   }
 }
 
+void knn_greater_cuda(float* distances, int*& pos_users, float*& dists_users, int n_users, int k, int user_pos){
+  // float* t_distances; int* t_pos_users;
+  // t_distances = new float[n_users]; t_pos_users = new int[n_users];
+  pos_users = new int[k]; dists_users = new float[k];
+
+  thrust::host_vector<float> t_distances(n_users);
+  thrust::host_vector<int> t_pos_users(n_users);
+  thrust::device_vector<float> d_t_distances;
+  thrust::device_vector<int> d_t_pos_users;
+
+
+  for (size_t i = 0; i < n_users; i++) {
+    t_distances[i] = (distances[i]);
+    t_pos_users[i] = (i);
+  }
+  d_t_distances = t_distances;
+  d_t_pos_users = t_pos_users;
+
+
+  reloj r;
+  r.start();
+  thrust::sort_by_key(d_t_distances.begin(), d_t_distances.begin() + n_users, d_t_pos_users.begin());
+
+  thrust::copy(d_t_distances.begin(), d_t_distances.end(), t_distances.begin());
+  thrust::copy(d_t_pos_users.begin(), d_t_pos_users.end(), t_pos_users.begin());
+  r.stop();
+  cout<<"Cuda knns: "<<r.time()<<"ms"<<endl;
+
+  int counter = 0;
+  int i = 0;
+  while (counter < k) {
+    if(t_pos_users[i] != user_pos){
+      dists_users[counter] = t_distances[n_users - i - 1];
+      pos_users[counter] = t_pos_users[n_users - i - 1];
+      counter++;
+    }
+    i++;
+  }
+}
 
 
 #endif

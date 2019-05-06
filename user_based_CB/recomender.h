@@ -21,9 +21,9 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
 
   r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_less_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
   r2.stop();
   cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
 
@@ -31,10 +31,10 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
   int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
 
   map<int, float> map_user;
-  cout<<"vistos: "<<endl;
+  // cout<<"vistos: "<<endl;
   for (size_t i = 0; i < row_size[pos_user]; i++) {
     map_user[ids_movies_user[i]] = vals_user[i];
-    cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+    // cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
   }
 
   map<int, pair<float, int> > movies;
@@ -51,7 +51,7 @@ void k_recomendations(vector<int>& ids_movies, vector<float>& movies_ratings, fl
     }
     if(!pq.empty()){
       par_fi pelicula = pq.top();
-      while (pelicula.first > 4 && !pq.empty()) {
+      while (pelicula.first >= 4 && !pq.empty()) {
         auto pelicula_it = movies.find(pelicula.second);
         if(pelicula_it == movies.end()){
           movies[pelicula.second] = make_pair(pelicula.first, 1);
@@ -92,9 +92,9 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
 
   r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_less_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
   r2.stop();
   cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
 
@@ -102,10 +102,10 @@ void k_ordered_recomendations(vector<int>& ids_movies, vector<float>& movies_rat
   int* ids_movies_user = int_pointer(col_ind, ind_users, pos_user);
 
   map<int, float> map_user;
-  cout<<"vistos: "<<endl;
+  // cout<<"vistos: "<<endl;
   for (size_t i = 0; i < row_size[pos_user]; i++) {
     map_user[ids_movies_user[i]] = vals_user[i];
-    cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
+    // cout<<ids_movies_user[i]<<" -> "<<vals_user[i]<<endl;
   }
 
 
@@ -170,9 +170,9 @@ float k_proyection(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_u
 
   r2.start();
   if((measure == PEARSON) || (measure == COSINE))
-    knn_greater_std(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_greater_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
   else if(measure == EUCLIDEAN)
-    knn_less_std(distances, pos_users, dists_users, n_users, k, pos_user);
+    knn_less_cuda(distances, pos_users, dists_users, n_users, k, pos_user);
   r2.stop();
   cout<<"Calculo de knns: "<<r2.time()<<"ms"<<endl;
 
