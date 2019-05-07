@@ -1,9 +1,44 @@
 #include "gui.h"
 #include <thrust/sort.h>
 
-
+bool compare3(const pair<float, int>&i, const pair<float, int>&j)
+{
+  if(i.first == j.first){
+    return i.second < j.second;
+  }
+  return i.first > j.first;
+}
 
 int main(){
+
+
+
+  // thrust::host_vector<float> key;
+  // thrust::host_vector<int> values;
+  // key.push_back(1);  values.push_back(12);
+  // key.push_back(3);  values.push_back(1);
+  // key.push_back(1);  values.push_back(1);
+  // key.push_back(2);  values.push_back(2);
+  // key.push_back(2);  values.push_back(1);
+  // key.push_back(1);  values.push_back(4);
+  // key.push_back(1);  values.push_back(3);
+  //
+  // thrust::device_vector<float> d_key= key;
+  // thrust::device_vector<float> d_values = values;;
+  //
+  //
+  // thrust::sort_by_key(d_values.begin(), d_values.begin() + 6, d_key.begin());
+  //
+  // thrust::copy(d_key.begin(), d_key.end(), key.begin());
+  // thrust::copy(d_values.begin(), d_values.end(), values.begin());
+  // thrust::copy(key.begin(), key.end(), d_key.begin());
+  // thrust::copy(values.begin(), values.end(), d_values.begin());
+
+  // for (size_t i = 0; i < 6; i++) {
+  //   cout<<values[i]<<" "<<key[i]<<endl;
+  // }
+
+
 
   int n_ratings, n_users;
   n_ratings = 0;
@@ -28,7 +63,7 @@ int main(){
 
   // User interface
 
-  sf::RenderWindow window{{900, 600}, "Window"};
+  sf::RenderWindow window{{1300, 600}, "Window"};
 
   tgui::Gui gui{window}; // Create the gui and attach it to the window
 

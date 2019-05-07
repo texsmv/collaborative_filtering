@@ -115,13 +115,18 @@ __device__ float d_pearson(float* r1, int* col1, int s1, float* r2, int* col2, i
     return 0;
   }
 
+
+
   float num =(sum_xy - (sum_x * sum_y / n));
   float den1 = (sqrt(sum_y2 - pow(sum_y,2)/n));
   float den2 = (sqrt(sum_x2 - pow(sum_x,2)/n));
 
-  if( (n < 2) || (den1 == 0) ||  (den2 == 0) ){
+  if( (n < 2) || (den1 == 0) ||  (den2 == 0) || num == 0){
     return 0;
   }
+  // if ((num / (den1 * den2)) > 1){
+  //   return 1;
+  // }
 
   return  num / (den1 * den2);
 }

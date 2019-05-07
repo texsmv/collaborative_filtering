@@ -39,8 +39,10 @@ void predecir(tgui::Gui& gui, float*& d_values, int*& d_row_ind, int*& d_col_ind
   prediction = k_proyection(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, item_id, n_users);
   r.stop();
   cout<<"Tiempo de prediccion: "<<r.time()<<"ms"<<endl;
-  label_prediction->setText(to_string(prediction));
-
+  if(prediction == -1)
+    label_prediction->setText("Ya la vio");
+  else
+    label_prediction->setText(to_string(prediction));
 }
 
 
@@ -48,6 +50,7 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
   // cout<<"recomendar: "<<a<<endl;
   ids_movies.clear();
   movies_ratings.clear();
+  vector<int> contador;
   // movies_names.empty();
 
 
@@ -74,13 +77,14 @@ void recomendar(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movies_ra
   reloj r;
   r.start();
   // k_ordered_recomendations_1(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k, movies_names);
+  k_recomendaciones_propuesta(contador, ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k, movies_names);
   // k_recomendations_1(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
   // k_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
-  k_recomendations_repetidos(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
+  // k_recomendations_repetidos(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, measure, user_pos, k);
   r.stop();
   cout<<"Tiempo de recomendacion: "<<r.time()<<"ms"<<endl;
   for (size_t i = 0; i < ids_movies.size(); i++) {
-    list_movies->addItem(to_string(ids_movies[i]) + " : " + movies_names[ids_movies[i]] + " -> " + to_string(movies_ratings[i]));
+    list_movies->addItem("Rating: " + to_string(movies_ratings[i]) + " Contador: "+ to_string(contador[i]) +" Nombre: "  + movies_names[ids_movies[i]] );
     // cout<<movies_names[ids_movies[i]]<<" "<<movies_ratings[i]<<endl;
   }
 }
@@ -249,7 +253,7 @@ void inicializar_gui(tgui::Gui& gui,vector<int>& ids_movies, vector<float>& movi
 
   recommend_button->setPosition("label_recommend.right + 70", "label_recommend.top");
   recommend_button->setText("Recomendar");
-  list_movies->setSize(300, 280);
+  list_movies->setSize(600, 280);
   list_movies->setPosition("label_recommend.left", "label_recommend.top + 40");
 
 

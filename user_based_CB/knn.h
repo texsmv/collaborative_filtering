@@ -57,6 +57,14 @@ bool compare2(const pair<float, int>&i, const pair<float, int>&j)
     return i.first > j.first;
 }
 
+bool compare_greater(const pair<float, int>&i, const pair<float, int>&j)
+{
+  if(i.first == j.first){
+    return i.second < j.second;
+  }
+  return i.first > j.first;
+}
+
 void knn_greater_std(float* distances, int*& pos_users, float*& dists_users, int n_users, int k, int user_pos){
   pos_users = new int[k]; dists_users = new float[k];
   vector< pair<float, int> >v;
@@ -70,8 +78,6 @@ void knn_greater_std(float* distances, int*& pos_users, float*& dists_users, int
     pos_users[i] = v[i].second;
     dists_users[i] = v[i].first;
   }
-
-
 }
 
 void knn_less_std(float* distances, int*& pos_users, float*& dists_users, int n_users, int k, int user_pos){
@@ -87,9 +93,39 @@ void knn_less_std(float* distances, int*& pos_users, float*& dists_users, int n_
     pos_users[i] = v[i].second;
     dists_users[i] = v[i].first;
   }
-
-
 }
+
+void knn_less_std2(float* distances, int*& pos_users, float*& dists_users, int n_users, int k, int user_pos){
+  pos_users = new int[k]; dists_users = new float[k];
+  vector< pair<float, int> >v;
+
+  for (size_t i = 0; i < n_users; i++) {
+    if(i != user_pos)
+      v.push_back(make_pair(distances[i], i));
+  }
+  sort(v.begin(),v.end());
+  for (size_t i = 0; i < k; i++) {
+    pos_users[i] = v[i].second;
+    dists_users[i] = v[i].first;
+  }
+}
+
+void knn_greater_std2(float* distances, int*& pos_users, float*& dists_users, int n_users, int k, int user_pos){
+  pos_users = new int[k]; dists_users = new float[k];
+  vector< pair<float, int> >v;
+
+  for (size_t i = 0; i < n_users; i++) {
+    if(i != user_pos)
+      v.push_back(make_pair(distances[i], i));
+  }
+  sort(v.begin(),v.end(), compare_greater);
+  for (size_t i = 0; i < k; i++) {
+    pos_users[i] = v[i].second;
+    dists_users[i] = v[i].first;
+  }
+}
+
+
 
 
 // Cuda knn, not used beacuse it has worse performance
