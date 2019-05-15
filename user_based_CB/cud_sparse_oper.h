@@ -53,7 +53,7 @@ contra el usuario en la posicion pos_user
 todas las demas variables se asumen que estan inicializadas
 */
 void distances_one2all(float*& distances, float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_users, int* d_row_size, int n_users, int measure, int pos_user){
-  int block_size = 256;
+  float block_size = 256;
   dim3 block =  dim3(block_size, 1, 1);
   dim3 grid =  dim3(ceil(n_users / block_size), 1);
 
