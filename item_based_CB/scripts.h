@@ -66,6 +66,14 @@ void read_array(T*& arr, int size, string nombre){
   in.close();
 }
 
+float normalize_data(float &r_u, float &min, float &max){
+  return (2* (r_u - min ) - (max - min))/(max - min);
+}
+
+float desnormalize_data(float &nr_u, float &min, float &max){
+  return 0.5*((nr_u + 1) * (max - min)) + min;
+}
+
 void n_of_users(string path, int& n_ratings, int& n_users, bool header){
   ifstream infile(path);
   string line;
