@@ -93,6 +93,29 @@ void n_of_users(string path, int& n_ratings, int& n_users, bool header){
   cout<<n_ratings<<" "<<n_users<<endl;
 }
 
+
+void average_per_user(float *&values, int *&ind_users, int *&row_size, float*&maxs, float*&mins, float*&averages, int n_users){
+  cout<<"hallando mins, maxs y promedios\n";
+  averages = new float[n_users];
+  maxs = new float[n_users];
+  mins = new float[n_users];
+  float sum;
+  float max_,min_;
+  for(size_t i=0; i<n_users; i++){
+    max_ = 0; min_ = 5;
+    sum = 0;
+    for(size_t j=ind_users[i];j < ind_users[i]+row_size[i];j++){
+      sum += values[j];
+      if(max_< values[j]) max_= values[j];
+      if(min_> values[j]) min_ = values[j];
+    }
+    averages[i]=sum/row_size[i];
+    maxs[i] = max_;
+    mins[i] = min_;
+  }
+
+}
+
 void read_ML_ratings(string path, int n_ratings, int n_users, bool header, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, string version){
   string path_b = "binary_files/";
   values = new float[n_ratings];

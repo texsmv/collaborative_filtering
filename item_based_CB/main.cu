@@ -15,12 +15,20 @@ int main(int argc, char const *argv[]) {
   // n_ratings
   // n_of_users("../databases/ml-20m/ratings.csv", n_ratings, n_users, true);
   // cout<<n_ratings<<" "<<n_users<<endl;
+  float* values;
+  int *row_ind, * col_ind;
+  int * ind_users, *row_size;
+  float* maxs,*mins, *averages;
 
   float* item_values;
   int *item_row_ind, * item_col_ind;
   int * ind_items, *item_row_size;
 
   string path = "../databases/ml-latest/ratings.csv";
+
+  // read_ML_ratings( path, n_ratings,  n_users, true  , values,row_ind, col_ind, ind_users, row_size,"27");
+
+  // average_per_user(values,ind_users,row_size,maxs,mins,averages,n_users);
 
   read_ML_ratings_items(path, n_ratings, n_users, true,  item_values,  item_row_ind,  item_col_ind,  ind_items, item_row_size, "27");
 
