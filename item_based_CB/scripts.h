@@ -66,11 +66,11 @@ void read_array(T*& arr, int size, string nombre){
   in.close();
 }
 
-float normalize_data(float &r_u, float &min, float &max){
+float normalize_data(float r_u, float &min, float &max){
   return (2* (r_u - min ) - (max - min))/(max - min);
 }
 
-float desnormalize_data(float &nr_u, float &min, float &max){
+float desnormalize_data(float nr_u, float &min, float &max){
   return 0.5*((nr_u + 1) * (max - min)) + min;
 }
 
@@ -197,7 +197,7 @@ void read_ML_ratings(string path, int n_ratings, int n_users, bool header, float
 }
 
 
-void read_ML_ratings_items(string path, int n_ratings, int n_users, int n_movies, bool header, float*& item_values, int*& item_row_ind, int*& item_col_ind, int*& ind_items, int*& item_row_size, string version){
+void read_ML_ratings_items(string path, int n_ratings, int n_users, int n_movies, int n_ids_movies, bool header, float*& item_values, int*& item_row_ind, int*& item_col_ind, int*& ind_items, int*& item_row_size, string version, int*& pos_movies){
   string path_b = "binary_files/";
 
   item_values = new float[n_ratings];
@@ -205,7 +205,8 @@ void read_ML_ratings_items(string path, int n_ratings, int n_users, int n_movies
   item_col_ind = new int[n_ratings];
   ind_items = new int[n_movies];
   item_row_size = new int[n_movies];
-  if(fexists(path_b + "item_values_" + version) && fexists(path_b + "item_row_ind_" + version) && fexists(path_b + "item_col_ind_" + version) && fexists(path_b + "ind_item_" + version) && fexists(path_b + "item_row_size_" + version)){
+  pos_movies = new int[n_ids_movies];
+  if(fexists(path_b + "item_values_" + version) && fexists(path_b + "item_row_ind_" + version) && fexists(path_b + "item_col_ind_" + version) && fexists(path_b + "ind_item_" + version) && fexists(path_b + "item_row_size_" + version) && fexists(path_b + "pos_movies_" + version)){
     cout<<"Reading item_values"<<endl;
     read_array<float>(item_values, n_ratings, path_b + "item_values_" + version);
     cout<<"Reading item_row_ind"<<endl;
@@ -216,6 +217,8 @@ void read_ML_ratings_items(string path, int n_ratings, int n_users, int n_movies
     read_array<int>(ind_items, n_movies, path_b + "ind_item_" + version);
     cout<<"Reading item_row_size"<<endl;
     read_array<int>(item_row_size, n_movies, path_b + "item_row_size_" + version);
+    cout<<"Reading pos_movies"<<endl;
+    read_array<int>(pos_movies, n_ids_movies, path_b + "pos_movies_" + version);
   }else{
     ifstream infile(path);
     string line;
@@ -244,6 +247,7 @@ void read_ML_ratings_items(string path, int n_ratings, int n_users, int n_movies
     int j = 0;
     auto it = map_movies_items.begin();
     while (it != map_movies_items.end()) {
+      pos_movies[it->first] = j;
       auto ite = it->second->begin();
       ind_items[j] = i;
       item_row_size[j] = it->second->size();
@@ -267,6 +271,8 @@ void read_ML_ratings_items(string path, int n_ratings, int n_users, int n_movies
     write_array<int>(ind_items, n_movies, path_b + "ind_item_" + version);
     cout<<"Writing item_row_size"<<endl;
     write_array<int>(item_row_size, n_movies, path_b + "item_row_size_" + version);
+    cout<<"Writing pos_movies"<<endl;
+    write_array<int>(pos_movies, n_ids_movies, path_b + "pos_movies_" + version);
 
 
   }

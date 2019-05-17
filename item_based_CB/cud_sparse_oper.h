@@ -38,6 +38,28 @@ void set_tm(int i, int j, float val, float* matriz){
   matriz[pos] = val;
 }
 
+float get_tm2(int i, int j, float* matriz){
+  if(i < j){
+    int temp = j;
+    j = i;
+    i = temp;
+  }
+  int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
+  // cout<<"posicion "<<pos<<endl;
+  return matriz[pos];
+}
+
+void set_tm2(int i, int j, float val, float* matriz){
+  if(i < j){
+    int temp = j;
+    j = i;
+    i = temp;
+  }
+  int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
+  // cout<<"posicion "<<pos<<endl;
+  matriz[pos] = val;
+}
+
 __global__ void one2all_adjusted_cosine(float* d_averages, float* d_item_values, int* d_item_row_ind, int* d_item_col_ind, int* d_ind_items, int* d_item_row_size, float* d_distances, int pos_movie, int n_movies){
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   if(i < n_movies){
