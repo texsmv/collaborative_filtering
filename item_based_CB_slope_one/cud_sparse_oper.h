@@ -56,7 +56,6 @@ float get_tm2(int i, int j, float* matriz){
       return p_entera + (1 - p_flotante);
       // return
     }
-    return matriz[pos];
   }
   else{
     int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
@@ -67,11 +66,13 @@ float get_tm2(int i, int j, float* matriz){
 
 void set_tm2(int i, int j, float val, float* matriz){
   if(i < j){
-    int temp = j;
-    j = i;
-    i = temp;
-    int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
-    matriz[pos] = -val;
+    // int temp = j;
+    // j = i;
+    // i = temp;
+    // int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
+    // matriz[pos] = -val;
+    // int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
+    // matriz[pos] = val;
   }
   else{
     int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
@@ -102,9 +103,13 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
   similarity_matrix = new float[tam];
   if(fexists("binary_files/similarity_matrix_desviacion")){
     read_array<float>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
-    // for (size_t i = 0; i < 305; i++) {
-    //   cout<<similarity_matrix[i]<<" i: "<<i<<endl;
-    // }
+    for (size_t i = 0; i < 20; i++) {
+      for (size_t j = 0; j < 20; j++) {
+        cout<<get_tm2(j, i, similarity_matrix)<<" ";
+      }
+      cout<<endl;
+    }
+
   }
 
   cout<<"array creado"<<endl;
@@ -125,7 +130,7 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
     r.stop();
     cout<<(r.time())<<"ms"<<endl;
     counter++;
-    if(counter % 5000 == 0){
+    if(counter % 100 == 0){
       counter = 0;
       (*posicion_sm) = i;
 

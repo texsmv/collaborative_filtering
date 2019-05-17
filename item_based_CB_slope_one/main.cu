@@ -95,17 +95,17 @@ int main(int argc, char const *argv[]) {
 
   get_similarity_matrix(n_ratings, n_users, n_movies, d_item_values, d_item_row_ind, d_item_col_ind, d_ind_items, d_item_row_size, similarity_matrix, posicion_sm);
 
-  float* r1 = float_pointer(values, ind_users, 3);
-  int* c1 = int_pointer(col_ind, ind_users, 3);
-  cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[169], 3, pos_movies)<<endl;
-  cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[339], 3, pos_movies)<<endl;
-  cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[349], 3, pos_movies)<<endl;
-  cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[296], 3, pos_movies)<<endl;
-  int poss = 0;
-  while (true) {
-    cin>>poss;
-    cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[poss], 3, pos_movies)<<endl;
-  }
+  // float* r1 = float_pointer(values, ind_users, 0);
+  // int* c1 = int_pointer(col_ind, ind_users, 0);
+  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[169], 3, pos_movies)<<endl;
+  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[339], 3, pos_movies)<<endl;
+  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[349], 3, pos_movies)<<endl;
+  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[296], 3, pos_movies)<<endl;
+  // int poss = 0;
+  // while (true) {
+  //   cin>>poss;
+  //   cout<<predecir(similarity_matrix, r1, c1, row_size[0], pos_movies[poss], poss, pos_movies)<<endl;
+  // }
 
   // for (size_t i = 0; i < 20; i++) {
   //   for (size_t j = 0; j < 20; j++) {

@@ -98,6 +98,13 @@ int main(int argc, char const *argv[]) {
 
   get_similarity_matrix(n_ratings, n_users, n_movies, d_item_values, d_item_row_ind, d_item_col_ind, d_ind_items, d_item_row_size, d_averages, similarity_matrix, posicion_sm);
 
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0;  j< 4; j++) {
+      /* code */
+      cout<<get_tm2(i, j, similarity_matrix)<<" ";
+    }
+    cout<<endl;
+  }
 
     /* code */
   float* r1 = float_pointer(values, ind_users, 3);
