@@ -28,14 +28,14 @@ int main(int argc, char const *argv[]) {
   n_ratings_l = 49;
   n_users_l = 8;
 
-  // n_ratings = n_ratings_20;
-  // n_users = n_users_20;
+  n_ratings = n_ratings_20;
+  n_users = n_users_20;
 
-  n_ratings = n_ratings_l;
-  n_users = n_users_l;
+  // n_ratings = n_ratings_l;
+  // n_users = n_users_l;
 
   // n_ratings
-  n_of_users("../databases/libro/ratings.csv", n_ratings, n_users, true);
+  // n_of_users("../databases/libro/ratings.csv", n_ratings, n_users, true);
   // cout<<n_ratings<<" "<<n_users<<endl;
 
   float* values;
@@ -54,11 +54,11 @@ int main(int argc, char const *argv[]) {
 
   map<int, string> movies_names;
 
-  // read_ML_movies("../databases/ml-20m/movies.csv", movies_names, true);
-  // read_ML_ratings("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size, "27");
+  read_ML_movies("../databases/ml-20m/movies.csv", movies_names, true);
+  read_ML_ratings("../databases/ml-20m/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size, "27");
 
-  read_ML_movies("../databases/libro/movies.csv", movies_names, true);
-  read_ML_ratings("../databases/libro/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size, "l");
+  // read_ML_movies("../databases/libro/movies.csv", movies_names, true);
+  // read_ML_ratings("../databases/libro/ratings.csv", n_ratings, n_users, true, values, row_ind, col_ind, ind_users, row_size, "20");
 
   cuda_H2D<float>(values, d_values, n_ratings);
   cuda_H2D<int>(row_ind, d_row_ind, n_ratings);

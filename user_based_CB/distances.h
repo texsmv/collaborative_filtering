@@ -30,9 +30,9 @@ __device__ float d_cosine(float* r1, int* col1, int s1, float* r2, int* col2, in
     }
     else{
       if(it1 < s1){
-        it1++;  sum_x2 += (r1[it1] * r1[it1]);
+        sum_x2 += (r1[it1] * r1[it1]); it1++;
       }else{
-        it2++;  sum_y2+= (r2[it2] * r2[it2]);
+        sum_y2+= (r2[it2] * r2[it2]); it2++;
       }
     }
   }
@@ -99,8 +99,8 @@ __device__ float d_pearson(float* r1, int* col1, int s1, float* r2, int* col2, i
         sum_xy += (r1[it1] * r2[it2]);
         sum_x += r1[it1];
         sum_y += r2[it2];
-        sum_x2 += (r1[it1]) * (r1[it1]);
-        sum_y2 += (r2[it2]) * (r2[it2]);
+        sum_x2 += ((r1[it1]) * (r1[it1]));
+        sum_y2 += ((r2[it2]) * (r2[it2]));
         it1++; it2++;
         n++;
     }else if(col1[it1] < col2[it2]){
@@ -111,24 +111,24 @@ __device__ float d_pearson(float* r1, int* col1, int s1, float* r2, int* col2, i
   }
 
 
-  if(n < 2){
+  if((n == 0)){
     return 0;
   }
 
 
 
-  float num =(sum_xy - (sum_x * sum_y / n));
-  float den1 = (sqrt(sum_y2 - pow(sum_y,2)/n));
-  float den2 = (sqrt(sum_x2 - pow(sum_x,2)/n));
+  float num = (n * sum_xy - (sum_x * sum_y ));
+  float den1 = (n * sum_y2 - pow(sum_y,2));
+  float den2 = (n * sum_x2 - pow(sum_x,2));
 
-  if( (n < 2) || (den1 == 0) ||  (den2 == 0) || num == 0){
+  if( (den1 == 0) ||  (den2 == 0) ){
     return 0;
   }
   // if ((num / (den1 * den2)) > 1){
   //   return 1;
   // }
 
-  return  num / (den1 * den2);
+  return  num / sqrt(den1 * den2);
 }
 
 __host__ float euclidean(float* r1, int* col1, int s1, float* r2, int* col2, int s2){
@@ -148,7 +148,8 @@ __host__ float euclidean(float* r1, int* col1, int s1, float* r2, int* col2, int
     }
   }
   if(n == 0)
-    return numeric_limits<float>::infinity();
+    return 0;
+    // return numeric_limits<float>::infinity();
   return sqrt(sum);
 }
 
@@ -220,7 +221,8 @@ __device__ float d_euclidean(float* r1, int* col1, int s1, float* r2, int* col2,
     }
   }
   if(n == 0)
-    return CUDART_INF_F;
+    return 0;
+    // return CUDART_INF_F;
   return sqrt(sum);
 }
 
