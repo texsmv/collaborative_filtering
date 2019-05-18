@@ -498,9 +498,9 @@ float k_proyection(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_u
   }
 
   auto encontrado = map_user.find(id_movie);
-  if(encontrado != map_user.end()){
-    return -1;
-  }
+  // if(encontrado != map_user.end()){
+  //   return -1;
+  // }
   cout<<endl;
   cout<<"Prediccion: "<<endl;
   cout<<"--------------------------------"<<endl;
@@ -530,9 +530,9 @@ float k_proyection(float* d_values, int* d_row_ind, int* d_col_ind, int* d_ind_u
   float sum = 0;
   int n = 0;
 
-  // for (size_t i = 0; i < k; i++) {
-  //   cout<<"pos: "<< pos_users[i]<<" - >"<<"distancia: "<<dists_users[i]<<endl;
-  // }
+  for (size_t i = 0; i < k; i++) {
+    cout<<"pos: "<< pos_users[i]<<" - >"<<"distancia: "<<dists_users[i]<<endl;
+  }
 
   for (size_t i = 0; i < k; i++) {
     float* vals = float_pointer(values, ind_users, pos_users[i]);

@@ -160,11 +160,11 @@ void knn_less_cuda(float* distances, int*& pos_users, float*& dists_users, int n
   int counter = 0;
   int i = 0;
   while (counter < k) {
-    if(t_pos_users[i] != user_pos){
+    // if(t_pos_users[i] != user_pos){
       dists_users[counter] = t_distances[i];
       pos_users[counter] = t_pos_users[i];
       counter++;
-    }
+    // }
     i++;
   }
 }
@@ -200,11 +200,11 @@ void knn_greater_cuda(float* distances, int*& pos_users, float*& dists_users, in
   int counter = 0;
   int i = 0;
   while (counter < k) {
-    if(t_pos_users[i] != user_pos){
+    // if(t_pos_users[i] != user_pos){
       dists_users[counter] = t_distances[n_users - i - 1];
       pos_users[counter] = t_pos_users[n_users - i - 1];
       counter++;
-    }
+    // }
     i++;
   }
 }
