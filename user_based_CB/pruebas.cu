@@ -97,7 +97,7 @@ int main(int argc, char const *argv[]) {
     reloj r;
     r.start();
 
-    cout<<k_proyection(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, PEARSON,pos - 1, id_movie, n_users)<<endl;
+    cout<<k_proyection(d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE,pos - 1, id_movie, n_users)<<endl;
     // k_ordered_recomendations(ids_movies, movies_ratings, d_values, d_row_ind, d_col_ind, d_ind_users, d_row_size, values, row_ind, col_ind, ind_users, row_size, n_ratings, n_users, COSINE, pos, 10, movies_names);
     r.stop();
     cout<<r.time()<<"ms"<<endl;

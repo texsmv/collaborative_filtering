@@ -23,9 +23,9 @@ __device__ float d_cosine(float* r1, int* col1, int s1, float* r2, int* col2, in
         it1++; it2++;
         // n++;
       }else if(col1[it1] < col2[it2]){
-        it1++; sum_x2 += (r1[it1] * r1[it1]);
+        sum_x2 += (r1[it1] * r1[it1]); it1++;
       }else{
-        it2++; sum_y2+= (r2[it2] * r2[it2]);
+        sum_y2+= (r2[it2] * r2[it2]); it2++;
       }
     }
     else{
