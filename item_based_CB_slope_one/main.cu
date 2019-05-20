@@ -10,6 +10,9 @@ int main(int argc, char const *argv[]) {
   // y = modf(3.0, &x);
   // cout<<"x: "<<x<<endl;
   // cout<<"y: "<<y<<endl;
+  int a = 111;
+  int b = 1700000000;
+  cout<<(a + b)<<endl;
 
   int n_ratings, n_users, n_movies, n_ids_movies;
   int n_ratings_20, n_users_20, n_ratings_27, n_users_27, n_movies_27, n_ratings_l3, n_users_l3, n_movies_l3;
@@ -26,9 +29,9 @@ int main(int argc, char const *argv[]) {
   n_ratings_20 = 20000263;
   n_users_20 = 138493;
 
-  n_ratings = n_ratings_l3;
-  n_users = n_users_l3;
-  n_movies = n_movies_l3;
+  n_ratings = n_ratings_27;
+  n_users = n_users_27;
+  n_movies = n_movies_27;
   n_ids_movies = 193887;
 
   // n_ratings
@@ -67,11 +70,11 @@ int main(int argc, char const *argv[]) {
   d_item_row_size = cuda_array<int>(n_movies);
 
 
-  // string path = "../databases/ml-latest/ratings.csv";
-  string path = "../databases/libro/ratings3.csv";
+  string path = "../databases/ml-latest/ratings.csv";
+  // string path = "../databases/libro/ratings3.csv";
 
-  read_ML_ratings( path, n_ratings,  n_users, true  , values,row_ind, col_ind, ind_users, row_size,"l3");
-  read_ML_ratings_items(path, n_ratings, n_users, n_movies, n_ids_movies, true,  item_values,  item_row_ind,  item_col_ind,  ind_items, item_row_size, "l3", pos_movies);
+  read_ML_ratings( path, n_ratings,  n_users, true  , values,row_ind, col_ind, ind_users, row_size,"27");
+  read_ML_ratings_items(path, n_ratings, n_users, n_movies, n_ids_movies, true,  item_values,  item_row_ind,  item_col_ind,  ind_items, item_row_size, "27", pos_movies);
 
   cuda_H2D<float>(values, d_values, n_ratings);
   cuda_H2D<int>(row_ind, d_row_ind, n_ratings);
@@ -85,7 +88,7 @@ int main(int argc, char const *argv[]) {
   cuda_H2D<int>(ind_items, d_ind_items, n_movies);
   cuda_H2D<int>(item_row_size, d_item_row_size, n_movies);
 
-  float* similarity_matrix;
+  unsigned int* similarity_matrix;
 
   float* posicion_sm = new float(0);
   if(!fexists("binary_files/posicion_sm")){
@@ -107,6 +110,41 @@ int main(int argc, char const *argv[]) {
      }
      cout<<endl;
    }
+
+   cout<<endl<<endl;
+
+   // float block_size = 256;
+   // dim3 block =  dim3(block_size, 1, 1);
+   // dim3 grid =  dim3(ceil(n_movies / block_size), 1);
+   //
+   //
+   // unsigned int* distances = new unsigned int[n_movies];
+   // unsigned int* d_distances = cuda_array<unsigned int>(n_movies);
+   // one2all_desviacion<<<grid, block>>>(d_item_values, d_item_row_ind, d_item_col_ind, d_ind_items, d_item_row_size, d_distances, 0, n_movies);
+   // CHECK(cudaDeviceSynchronize());
+   // cuda_D2H<unsigned int>(d_distances, distances, n_movies);
+   // CHECK(cudaDeviceSynchronize());
+   // for (size_t j = 0; j < 10; j++) {
+   //   cout<<distances[j]<<endl;
+   // }
+
+   cout<<endl<<endl;
+
+   // float* distances2 = new float[n_movies];
+   // float* r1 = float_pointer(item_values, ind_items, 0);
+   // int* c1 = int_pointer(item_col_ind, ind_items, 0);
+   // for (size_t i = 0; i < 10; i++) {
+   //   // cout<<i<<endl;
+   //   float* r2 = float_pointer(item_values, ind_items, i);
+   //   int* c2 = int_pointer(item_col_ind, ind_items, i);
+   //   distances2[i] = desviacion(r1, c1, item_row_size[0], r2, c2, item_row_size[i]);
+   //
+   // }
+   // for (size_t i = 0; i < 10; i++) {
+   //   cout<<distances2[i]<<endl;
+   // }
+
+
 
 
   int id_user ;

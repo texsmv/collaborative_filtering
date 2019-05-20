@@ -9,7 +9,7 @@
 
 
 
-float predecir(float* similarity_matrix, float* r1, int* col1, int s1, int pos_movie, int user_pos, int* pos_movies){
+float predecir(unsigned int* similarity_matrix, float* r1, int* col1, int s1, int pos_movie, int user_pos, int* pos_movies){
   float num = 0;
   float den = 0;
   cout<<"row size: "<<s1<<endl;
@@ -17,29 +17,13 @@ float predecir(float* similarity_matrix, float* r1, int* col1, int s1, int pos_m
   float desv;
   for (size_t it1 = 0; it1 < s1; it1++) {
     // float val = get_tm2(pos_movies[col1[it1]] ,pos_movie, similarity_matrix);
-    float val = get_tm2(pos_movie ,pos_movies[col1[it1]], similarity_matrix);
+    unsigned int val = get_tm2(pos_movie ,pos_movies[col1[it1]], similarity_matrix);
     // cout<<val<<endl;
-    if (val < 0) {
-      card = -val;
-      desv = desnormalizar(0);
-    }
-    else{
-      float p_entera, p_flotante;
-      p_flotante = modf(val, &p_entera);
-      if(p_entera == 0){
-        card = 0;
-        desv = 0;
-      }
-      else if(p_flotante == 0){
-        card = p_entera - 1;
-        desv = desnormalizar(1);
-      }
-      else{
-        card = p_entera;
-        desv = desnormalizar(p_flotante);
-      }
+    card = val/10000;
+    int desvI = val - (card * 10000);
+    desv = desnormalizar(desvI / 1000.0);
 
-    }
+    // cout<<card<<"  ->  "<<desv<<endl;
 
     num += ((r1[it1] + desv) * card);
     den += card;

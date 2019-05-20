@@ -38,27 +38,17 @@ void set_tm(int i, int j, float val, float* matriz){
   matriz[pos] = val;
 }
 
-float get_tm2(int i, int j, float* matriz){
+unsigned int get_tm2(int i, int j, unsigned int* matriz){
   if(i < j){
     int temp = j;
     j = i;
     i = temp;
     int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
-    float val = matriz[pos];
-    if(val < 0){
-      return -val + 1;
-    }
-    else{
-      float p_entera, p_flotante;
-      p_flotante = modf(val, &p_entera);
-      if(p_entera == 0){
-        return 0;
-      }
-      else if(p_flotante == 0)
-        return val - 1;
-      return p_entera + (1 - p_flotante);
-      // return
-    }
+    unsigned int val = matriz[pos];
+    int card = val/10000;
+    int desv = val - (card * 10000);
+    desv = (1000 - desv);
+    return desv + (card * 10000);
   }
   else{
     int pos = int(((double)i + 1) * (double)i / 2 + (double)j);
@@ -67,7 +57,7 @@ float get_tm2(int i, int j, float* matriz){
   // cout<<"posicion "<<pos<<endl;
 }
 
-void set_tm2(int i, int j, float val, float* matriz){
+void set_tm2(int i, int j, unsigned int val, unsigned int* matriz){
   if(i < j){
     // int temp = j;
     // j = i;
@@ -84,7 +74,7 @@ void set_tm2(int i, int j, float val, float* matriz){
   // cout<<"posicion "<<pos<<endl;
 }
 
-__global__ void one2all_desviacion(float* d_item_values, int* d_item_row_ind, int* d_item_col_ind, int* d_ind_items, int* d_item_row_size, float* d_distances, int pos_movie, int n_movies){
+__global__ void one2all_desviacion(float* d_item_values, int* d_item_row_ind, int* d_item_col_ind, int* d_ind_items, int* d_item_row_size, unsigned int* d_distances, int pos_movie, int n_movies){
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   if(i < n_movies){
     float* r1 = float_pointer(d_item_values, d_ind_items, pos_movie);
@@ -95,17 +85,17 @@ __global__ void one2all_desviacion(float* d_item_values, int* d_item_row_ind, in
   }
 }
 
-void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_item_values, int*& d_item_row_ind, int*& d_item_col_ind, int*& d_ind_items, int*& d_item_row_size, float*& similarity_matrix, float*& posicion_sm){
+void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_item_values, int*& d_item_row_ind, int*& d_item_col_ind, int*& d_ind_items, int*& d_item_row_size, unsigned int*& similarity_matrix, float*& posicion_sm){
   float block_size = 256;
   dim3 block =  dim3(block_size, 1, 1);
   dim3 grid =  dim3(ceil(n_movies / block_size), 1);
-  float* distances = new float[n_movies];
-  float* d_distances = cuda_array<float>(n_movies);
+  unsigned int* distances = new unsigned int[n_movies];
+  unsigned int* d_distances = cuda_array<unsigned int>(n_movies);
   cout<<"creando array"<<endl;
   int tam = int(((double)n_movies + 1) * (double)n_movies / 2);
-  similarity_matrix = new float[tam];
+  similarity_matrix = new unsigned int[tam];
   if(fexists("binary_files/similarity_matrix_desviacion")){
-    read_array<float>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
+    read_array<unsigned int>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
     // for (size_t i = 0; i < 20; i++) {
     //   for (size_t j = 0; j < 20; j++) {
     //     cout<<get_tm2(j, i, similarity_matrix)<<" ";
@@ -125,7 +115,7 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
     r.start();
     one2all_desviacion<<<grid, block>>>(d_item_values, d_item_row_ind, d_item_col_ind, d_ind_items, d_item_row_size, d_distances, i, n_movies);
     CHECK(cudaDeviceSynchronize());
-    cuda_D2H<float>(d_distances, distances, n_movies);
+    cuda_D2H<unsigned int>(d_distances, distances, n_movies);
     CHECK(cudaDeviceSynchronize());
     for (size_t j = 0; j < n_movies; j++) {
       set_tm2(i, j, distances[j], similarity_matrix);
@@ -133,13 +123,13 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
     r.stop();
     cout<<(r.time())<<"ms"<<endl;
     counter++;
-    if(counter % 10000 == 0){
+    if(counter % 20000 == 0){
       counter = 0;
       (*posicion_sm) = i;
 
       r.start();
       write_array<float>(posicion_sm, 1, "binary_files/posicion_sm");
-      write_array<float>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
+      write_array<unsigned int>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
       r.stop();
       cout<<(r.time())<<"ms - writing"<<endl;
     }
@@ -147,7 +137,7 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
   if((*posicion_sm) != n_movies){
     (*posicion_sm) = n_movies;
     write_array<float>(posicion_sm, 1, "binary_files/posicion_sm");
-    write_array<float>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
+    write_array<unsigned int>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
   }
 
 }
