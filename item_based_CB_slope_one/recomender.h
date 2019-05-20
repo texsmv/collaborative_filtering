@@ -16,7 +16,9 @@ float predecir(float* similarity_matrix, float* r1, int* col1, int s1, int pos_m
   int card;
   float desv;
   for (size_t it1 = 0; it1 < s1; it1++) {
-    float val = get_tm2(pos_movies[col1[it1]], pos_movie, similarity_matrix);
+    // float val = get_tm2(pos_movies[col1[it1]] ,pos_movie, similarity_matrix);
+    float val = get_tm2(pos_movie ,pos_movies[col1[it1]], similarity_matrix);
+    // cout<<val<<endl;
     if (val < 0) {
       card = -val;
       desv = desnormalizar(0);
@@ -24,7 +26,11 @@ float predecir(float* similarity_matrix, float* r1, int* col1, int s1, int pos_m
     else{
       float p_entera, p_flotante;
       p_flotante = modf(val, &p_entera);
-      if(p_flotante == 0){
+      if(p_entera == 0){
+        card = 0;
+        desv = 0;
+      }
+      else if(p_flotante == 0){
         card = p_entera - 1;
         desv = desnormalizar(1);
       }

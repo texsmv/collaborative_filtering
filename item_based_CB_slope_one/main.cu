@@ -12,20 +12,25 @@ int main(int argc, char const *argv[]) {
   // cout<<"y: "<<y<<endl;
 
   int n_ratings, n_users, n_movies, n_ids_movies;
-  int n_ratings_20, n_users_20, n_ratings_27, n_users_27, n_movies_27;
+  int n_ratings_20, n_users_20, n_ratings_27, n_users_27, n_movies_27, n_ratings_l3, n_users_l3, n_movies_l3;
 
   n_ratings_27 = 27753444;
   n_users_27 = 283228;
   n_movies_27 = 53889;
 
+  n_ratings_l3 = 9;
+  n_users_l3 = 4;
+  n_movies_l3 = 3;
+
 
   n_ratings_20 = 20000263;
   n_users_20 = 138493;
 
-  n_ratings = n_ratings_27;
-  n_users = n_users_27;
-  n_movies = n_movies_27;
+  n_ratings = n_ratings_l3;
+  n_users = n_users_l3;
+  n_movies = n_movies_l3;
   n_ids_movies = 193887;
+
   // n_ratings
   // n_of_users("../databases/ml-20m/ratings.csv", n_ratings, n_users, true);
   // cout<<n_ratings<<" "<<n_users<<endl;
@@ -62,10 +67,11 @@ int main(int argc, char const *argv[]) {
   d_item_row_size = cuda_array<int>(n_movies);
 
 
-  string path = "../databases/ml-latest/ratings.csv";
+  // string path = "../databases/ml-latest/ratings.csv";
+  string path = "../databases/libro/ratings3.csv";
 
-  read_ML_ratings( path, n_ratings,  n_users, true  , values,row_ind, col_ind, ind_users, row_size,"27");
-  read_ML_ratings_items(path, n_ratings, n_users, n_movies, n_ids_movies, true,  item_values,  item_row_ind,  item_col_ind,  ind_items, item_row_size, "27", pos_movies);
+  read_ML_ratings( path, n_ratings,  n_users, true  , values,row_ind, col_ind, ind_users, row_size,"l3");
+  read_ML_ratings_items(path, n_ratings, n_users, n_movies, n_ids_movies, true,  item_values,  item_row_ind,  item_col_ind,  ind_items, item_row_size, "l3", pos_movies);
 
   cuda_H2D<float>(values, d_values, n_ratings);
   cuda_H2D<int>(row_ind, d_row_ind, n_ratings);
@@ -94,25 +100,25 @@ int main(int argc, char const *argv[]) {
 
 
   get_similarity_matrix(n_ratings, n_users, n_movies, d_item_values, d_item_row_ind, d_item_col_ind, d_ind_items, d_item_row_size, similarity_matrix, posicion_sm);
+  for (size_t i = 0; i < 3; i++) {
+     for (size_t j = 0;  j< 3; j++) {
+       /* code */
+       cout<<get_tm2(i, j, similarity_matrix)<<"    ";
+     }
+     cout<<endl;
+   }
 
-  // float* r1 = float_pointer(values, ind_users, 0);
-  // int* c1 = int_pointer(col_ind, ind_users, 0);
-  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[169], 3, pos_movies)<<endl;
-  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[339], 3, pos_movies)<<endl;
-  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[349], 3, pos_movies)<<endl;
-  // cout<<predecir(similarity_matrix, r1, c1, row_size[3], pos_movies[296], 3, pos_movies)<<endl;
-  // int poss = 0;
-  // while (true) {
-  //   cin>>poss;
-  //   cout<<predecir(similarity_matrix, r1, c1, row_size[0], pos_movies[poss], poss, pos_movies)<<endl;
-  // }
 
-  // for (size_t i = 0; i < 20; i++) {
-  //   for (size_t j = 0; j < 20; j++) {
-  //     cout<<get_tm2(i, j, similarity_matrix)<<" ";
-  //   }
-  //   cout<<endl;
-  // }
+  int id_user ;
+  int id_movie;
+  while (true) {
+    cin>>id_user;
+    cin>>id_movie;
+    float* r1 = float_pointer(values, ind_users, id_user - 1);
+    int* c1 = int_pointer(col_ind, ind_users, id_user - 1);
+    cout<<predecir(similarity_matrix, r1, c1, row_size[id_user - 1], pos_movies[id_movie], id_user - 1, pos_movies)<<endl;
+  }
+
 
 
   // cout<<get_tm(0, 0, similarity_matrix)<<endl;

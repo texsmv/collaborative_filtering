@@ -51,7 +51,10 @@ float get_tm2(int i, int j, float* matriz){
     else{
       float p_entera, p_flotante;
       p_flotante = modf(val, &p_entera);
-      if(p_flotante == 0)
+      if(p_entera == 0){
+        return 0;
+      }
+      else if(p_flotante == 0)
         return val - 1;
       return p_entera + (1 - p_flotante);
       // return
@@ -103,12 +106,12 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
   similarity_matrix = new float[tam];
   if(fexists("binary_files/similarity_matrix_desviacion")){
     read_array<float>(similarity_matrix, tam, "binary_files/similarity_matrix_desviacion");
-    for (size_t i = 0; i < 20; i++) {
-      for (size_t j = 0; j < 20; j++) {
-        cout<<get_tm2(j, i, similarity_matrix)<<" ";
-      }
-      cout<<endl;
-    }
+    // for (size_t i = 0; i < 20; i++) {
+    //   for (size_t j = 0; j < 20; j++) {
+    //     cout<<get_tm2(j, i, similarity_matrix)<<" ";
+    //   }
+    //   cout<<endl;
+    // }
 
   }
 
@@ -130,7 +133,7 @@ void get_similarity_matrix(int n_ratings, int n_users, int n_movies, float*& d_i
     r.stop();
     cout<<(r.time())<<"ms"<<endl;
     counter++;
-    if(counter % 100 == 0){
+    if(counter % 10000 == 0){
       counter = 0;
       (*posicion_sm) = i;
 
