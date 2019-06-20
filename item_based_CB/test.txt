@@ -1,0 +1,16 @@
+Reading values
+Reading row_ind
+Reading col_ind
+Reading ind_users
+Reading row_size
+Reading item_values
+Reading item_row_ind
+Reading item_col_ind
+Reading ind_items
+Reading item_row_size
+Reading pos_movies
+hallando mins, maxs y promedios
+as
+reading sm pos
+Posicion actual: 53889
+creando array

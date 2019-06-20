@@ -147,7 +147,8 @@ int main(int argc, char const *argv[]) {
 
 
 
-  int id_user ;
+   cout<<"Ingresar"<<endl;
+  int id_user;
   int id_movie;
   while (true) {
     cin>>id_user;

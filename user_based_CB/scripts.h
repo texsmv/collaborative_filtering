@@ -161,9 +161,9 @@ void read_ML_ratings(string path, int n_ratings, int n_users, bool header, float
 
   }
 
-
-
 }
+
+
 
 void mapa_peliculas(int n_ratings, int n_users, float*& values, int*& row_ind, int*& col_ind, int*& ind_users, int*& row_size, map<int, float>*& map_movies){
   map_movies = new map<int, float>[n_users];
